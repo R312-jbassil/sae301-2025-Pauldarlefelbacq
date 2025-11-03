@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Luxurious+Roman&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+    name: "perso";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: #FAFAFA;
+    --color-base-200: #EAEAEA;
+    --color-base-300: #DADADA;
+    --color-base-content: #303030;
+    --color-primary: #303030;
+    --color-primary-content: #FAFAFA;
+    --color-secondary: #858585;
+    --color-secondary-content: #FAFAFA;
+    --color-accent: #2C5F8D;
+    --color-accent-content: #FAFAFA;
+    --color-neutral: #303030;
+    --color-neutral-content: #FAFAFA;
+    --color-info: oklch(0.551 0.196 232.7);
+    --color-info-content: #FAFAFA;
+    --color-success: #4A7C59;
+    --color-success-content: #FAFAFA;
+    --color-warning: oklch(0.703 0.189 84.4);
+    --color-warning-content: #FAFAFA;
+    --color-error: oklch(0.426 0.295 13.4);
+    --color-error-content: #FAFAFA;
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.25rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.21875rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+  
+
+@theme {
+    /* Couleurs */
+    --color-blanc: #FAFAFA;
+    --color-grisA: #303030;
+    --color-gris: #858585;
+    --color-vert: #4A7C59;
+
+    /* Typos */
+    --font-luxurious: "Luxurious Roman", serif;
+    --font-sans: "Open Sans", sans-serif;
+}
+
+@layer base {
+    * {
+        font-family: var(--font-sans);
+        font-size: 1.25rem;
+    }
+
+    body {
+        background-color: var(--color-blanc);
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-family: var(--font-luxurious);
+    }
+    h2 {
+        font-size: 2.25rem;
+        font-weight: bold;
+    }
+}
