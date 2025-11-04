@@ -11,9 +11,6 @@ export default defineConfig({
   output: 'server',
 
   vite: {
-    plugins: [tailwindcss()],
-    ssr: {
-      noExternal: true
-    }
+    plugins: [tailwindcss()]
   }
 });

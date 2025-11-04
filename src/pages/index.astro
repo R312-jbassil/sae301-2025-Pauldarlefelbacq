@@ -20,7 +20,11 @@ if (authCookie) {
 	<Hero />
 	<h1 class="text-5xl text-grisA">Hello</h1>
 	<h2>Sous titre en bien</h2>
+	{user ?
 	<p>{user.email}</p>
+	:
+	<p>connecte toi bouffon</p>}
+	
 	<Button content="hihi" link="/" />
 	<Button content="hihi" link="/" ombres="true" />
 </Layout>

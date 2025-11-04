@@ -1,3 +1,5 @@
+import pb from "../../backend/backend.mjs";
+
 export const onRequest = async (context, next) => {
   const cookie = context.cookies.get("pb_auth")?.value;
     if (cookie) {
@@ -15,8 +17,8 @@ export const onRequest = async (context, next) => {
     }
 
     if (!context.locals.user) {
-        if (context.url.pathname !== '/login' && context.url.pathname !== '/')
-            return Response.redirect(new URL('/login', context.url), 303);
+        if (context.url.pathname !== '/connection' && context.url.pathname !== '/')
+            return Response.redirect(new URL('/connection', context.url), 303);
     }
     return next();
 }

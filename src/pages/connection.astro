@@ -58,7 +58,7 @@ import Header from "../layouts/Header.astro";
             <input type="radio" name="my_tabs_4" role="tab" class="tab text-lg font-semibold text-grisA" aria-label="Inscription" id="tab2" />
             <div role="tabpanel" class="tab-content bg-blanc shadow-gris text-grisA border-gris place-items-center rounded-sm p-8 ">
                 <h2 class="text-2xl font-bold mb-6">Inscrivez vous pour créer vos paires !</h2>
-                <form class="space-y-4 flex-col place-content-center justify-center">
+                <form id="register-form" class="space-y-4 flex-col place-content-center justify-center">
                     <div class="w-4/3 flex justify-self-center place-self-center">
                         <label class="input input-bordered flex items-center gap-2 bg-blanc border-gris rounded-xs outline-grisA focus:outline-1">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70">
@@ -132,8 +132,6 @@ import Header from "../layouts/Header.astro";
     localStorage.removeItem("user");
     const form = document.getElementById("login-form");
     const status = document.getElementById("status");
-    console.log(status);
-    console.log(status);
     
 
     form.addEventListener("submit", async(e) => {
@@ -161,4 +159,6 @@ import Header from "../layouts/Header.astro";
         }
     })
     
+    formR = document.getElementById("register-form");
+
 </script>

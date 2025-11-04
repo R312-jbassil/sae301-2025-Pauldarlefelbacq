@@ -1,5 +1,16 @@
 ---
 import Logo from "../assets/Logo_Tavu.svg";
+import pb from '../../backend/backend.mjs';
+
+const authCookie = Astro.cookies.get('pb_auth');
+let user = null;
+
+if (authCookie) {
+    pb.authStore.loadFromCookie(authCookie.value);
+    if (pb.authStore.isValid) {
+        user = pb.authStore.model;
+    }
+}
 ---
 
 <header
@@ -59,6 +70,7 @@ import Logo from "../assets/Logo_Tavu.svg";
       </div>
     </div>
     <div class="dropdown dropdown-end mr-5">
+      {!user ? 
       <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
         <div class="w-10 rounded-full">
           <img
@@ -72,14 +84,28 @@ import Logo from "../assets/Logo_Tavu.svg";
         class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-6 w-52 p-2 shadow"
       >
         <li>
-          <a class="justify-between hover:text-vert hover:underline hover:font-bold"> Profil </a>
+          <a href="/connection" class="justify-between hover:text-vert hover:underline hover:font-bold"> Se connecter </a>
+        </li>
+      </ul>
+      :<div tabindex="0" role="button" class="btn bg-grisA btn-circle avatar">
+        <div class="w-10 rounded-full">
+          <span>{user.name.substring(0,1)}</span>
+        </div>
+      </div>
+      <ul
+        tabindex="-1"
+        class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-6 w-52 p-2 shadow"
+      >
+        <li>
+          <a class="justify-between hover:text-vert hover:underline hover:font-bold"> {user.name} </a>
         </li>
         <li>
           <form method="POST" action="/api/logout">
             <button type="submit" class="justify-between hover:text-vert hover:underline hover:font-bold ">Se déconnecter</button>
           </form>
         </li>
-      </ul>
+      </ul>}
+      
     </div>
   </div>
 </header>
