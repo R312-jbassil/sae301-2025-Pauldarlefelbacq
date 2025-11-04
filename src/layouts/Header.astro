@@ -75,7 +75,9 @@ import Logo from "../assets/Logo_Tavu.svg";
           <a class="justify-between hover:text-vert hover:underline hover:font-bold"> Profil </a>
         </li>
         <li>
-          <a class="justify-between hover:text-vert hover:underline hover:font-bold">Se déconnecter</a>
+          <form method="POST" action="/api/logout">
+            <button type="submit" class="justify-between hover:text-vert hover:underline hover:font-bold ">Se déconnecter</button>
+          </form>
         </li>
       </ul>
     </div>
