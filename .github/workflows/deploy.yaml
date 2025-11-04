@@ -55,6 +55,6 @@ jobs:
             if pm2 describe SAE301 > /dev/null 2>&1; then
               PORT=8089 pm2 restart SAE301 --update-env
             else
-              PORT=8089 pm2 start entry.mjs --name SAE301
+              PORT=8089 pm2 start dist/server/entry.mjs --name SAE301 --cwd /var/www/SAE301
             fi
             pm2 save
