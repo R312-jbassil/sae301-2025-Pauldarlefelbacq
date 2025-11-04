@@ -1,0 +1,76 @@
+---
+import "../styles/global.css";
+import Logo from "../assets/Logo_Tavu.svg";
+---
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href=`${Logo.src}` />
+    <meta name="generator" content={Astro.generator} />
+    <title>Connection</title>
+</head>
+<body class="p-8">
+    <div role="tablist" class="tabs tabs-lifted">
+        <input type="radio" name="my_tabs_4" role="tab" class="tab text-lg font-semibold" aria-label="Connection" id="tab1" checked />
+        <div role="tabpanel" class="tab-content bg-base-100 border border-base-300 rounded-br-box rounded-bl-box p-8">
+            <h2 class="text-2xl font-bold">Nous sommes heureux de vous revoir !</h2>
+        </div>
+        
+        <input type="radio" name="my_tabs_4" role="tab" class="tab text-lg font-semibold" aria-label="Inscription" id="tab2" />
+        <div role="tabpanel" class="tab-content bg-base-100 border border-base-300 rounded-br-box rounded-bl-box p-8">
+            <h2 class="text-2xl font-bold">Créez votre compte</h2>
+        </div>
+    </div>
+
+    <style>
+        .tab-content {
+            display: none;
+            grid-column-start: 1;
+            grid-column-end: span 2;
+            grid-row-start: 2;
+        }
+        
+        input[type="radio"]:checked + .tab-content {
+            display: block;
+        }
+
+        .tabs-lifted {
+            display: inline-grid;
+            grid-auto-flow: column;
+            grid-auto-columns: max-content;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .tab {
+            appearance: none;
+            cursor: pointer;
+            border: 1px solid hsl(var(--bc) / 0.2);
+            border-bottom: none;
+            background-color: hsl(var(--b2));
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background-color: hsl(var(--b3));
+        }
+
+        .tab:checked {
+            background-color: hsl(var(--b1));
+            border-color: hsl(var(--bc) / 0.2);
+            position: relative;
+            z-index: 2;
+            margin-bottom: -1px;
+            padding-bottom: calc(0.75rem + 1px);
+        }
+
+        .tab::after {
+            content: attr(aria-label);
+        }
+    </style>
+</body>
+</html>

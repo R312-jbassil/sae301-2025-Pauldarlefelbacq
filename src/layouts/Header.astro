@@ -3,7 +3,7 @@ import Logo from "../assets/Logo_Tavu.svg";
 ---
 
 <header
-  class="flex navbar bg-blanc shadow-sm text-grisA fixed top-0 left-1/2 -translate-x-1/2 w-9/10 rounded-sm z-10 mt-5"
+  class="flex navbar bg-blanc shadow-sm text-grisA fixed top-0 left-1/2 -translate-x-1/2 w-9/10 rounded-sm z-10 mt-5 h-"
 >
   <div class="navbar-start">
     <a href="/">
@@ -47,13 +47,13 @@ import Logo from "../assets/Logo_Tavu.svg";
       </div>
       <div
         tabindex="0"
-        class="card card-compact dropdown-content bg-blanc z-1 mt-3 w-52 shadow"
+        class="card card-compact dropdown-content bg-blanc z-1 mt-6 w-52 shadow"
       >
         <div class="card-body">
-          <span class="text-lg font-bold">8 Objets</span>
-          <span class="text-info">Total: $999</span>
+          <span class="text-lg">8 Objets</span>
+          <span class="">Total: <b>$999</b></span>
           <div class="card-actions">
-            <button class="btn btn-primary btn-block">Voir le panier</button>
+            <button class="btn btn-grisA btn-block hover:bg-blanc hover:text-grisA">Voir le panier</button>
           </div>
         </div>
       </div>
@@ -69,12 +69,14 @@ import Logo from "../assets/Logo_Tavu.svg";
       </div>
       <ul
         tabindex="-1"
-        class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-3 w-52 p-2 shadow"
+        class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-6 w-52 p-2 shadow"
       >
         <li>
-          <a class="justify-between"> Profil </a>
+          <a class="justify-between hover:text-vert hover:underline hover:font-bold"> Profil </a>
         </li>
-        <li><a>Se déconnecter</a></li>
+        <li>
+          <a class="justify-between hover:text-vert hover:underline hover:font-bold">Se déconnecter</a>
+        </li>
       </ul>
     </div>
   </div>

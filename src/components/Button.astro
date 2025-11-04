@@ -1,1 +1,11 @@
-<button></button>
+---
+const { content } = Astro.props;
+const { link } = Astro.props;
+const { ombres } = Astro.props;
+---
+
+<a  href={`/${link}`} 
+    class={ombres ? "bg-blanc text-vert px-3 py-1 rounded-[3px] hover:bg-vert hover:text-blanc drop-shadow-sm drop-shadow-gris" 
+                  : "bg-blanc text-vert px-3 py-1 rounded-[3px] hover:bg-vert hover:text-blanc"}>
+    {content}
+</a>

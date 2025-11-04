@@ -1,11 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro'
+import Button from '../components/Button.astro';
 ---
 
-<Layout>
+<Layout title="Accueil">
 	<Hero />
 	<h1 class="text-5xl text-grisA">Hello</h1>
 	<h2>Sous titre en bien</h2>
 	<p>texte en bieng</p>
+	<Button content="hihi" link="/" />
+	<Button content="hihi" link="/" ombres="true" />
 </Layout>
