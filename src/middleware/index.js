@@ -10,7 +10,7 @@ export const onRequest = async (context, next) => {
     }
 
     if (context.url.pathname.startsWith('/api/')) {
-        if (!context.locals.user && context.url.pathname !== '/api/login') {
+        if (!context.locals.user && context.url.pathname !== '/api/login' && context.url.pathname !== '/api/register') {
             return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
         }
         return next();

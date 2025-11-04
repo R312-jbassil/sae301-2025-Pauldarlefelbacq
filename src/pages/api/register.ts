@@ -1,16 +1,15 @@
 import pb from "../../../backend/backend.mjs";
 
 export const POST = async ({ request, cookies }) => {
-    const { email, password, username } = await request.json();
+    const { email, password } = await request.json();
     try {
         const user = await pb.collection("users").create({
             email,
             password,
             passwordConfirm: password,
-            username: username || email.split('@')[0],
+            name: email.split('@')[0],
         });
 
-        // Authentifier automatiquement l'utilisateur après l'inscription
         const authData = await pb.collection("users").authWithPassword(email, password);
 
         cookies.set("pb_auth", pb.authStore.exportToCookie(), {
