@@ -1,0 +1,128 @@
+---
+import CustomizableGlasses from './CustomizableGlasses.astro';
+
+interface Props {
+  glasses: any;
+}
+
+const { glasses } = Astro.props;
+
+let montureColor = '#ffffff';
+let branchesColor = '#ffffff';
+
+if (glasses.code_SVG) {
+  const parts = glasses.code_SVG.split(',');
+  parts.forEach((part: string) => {
+    if (part.startsWith('monture:')) {
+      montureColor = part.split(':')[1];
+    } else if (part.startsWith('branches:')) {
+      branchesColor = part.split(':')[1];
+    }
+  });
+}
+
+if (glasses.monture) montureColor = glasses.monture;
+if (glasses.branches) branchesColor = glasses.branches;
+---
+
+<div class="glasses-card bg-blanc border-2 border-gris rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+  <!-- Name and Price Header -->
+  {glasses.nom && (
+    <h3 class="text-lg font-bold text-grisA mb-2">{glasses.nom}</h3>
+  )}
+  {glasses.prix && (
+    <p class="text-xl font-bold text-vert mb-4">{glasses.prix}€</p>
+  )}
+  
+  <div class="preview mb-4">
+    <CustomizableGlasses 
+      montureColor={montureColor}
+      brancheColor={branchesColor}
+      className="w-full"
+    />
+  </div>
+  
+  <div class="info space-y-2 text-grisA">
+    <div class="flex justify-between items-center">
+      <span class="font-semibold">Monture:</span>
+      <div class="flex items-center gap-2">
+        <div 
+          class="w-6 h-6 rounded border border-gris" 
+          style={`background-color: ${montureColor}`}
+        ></div>
+        <span class="text-sm">{glasses.expand?.id_mat_m?.libelle_mat_m || 'N/A'}</span>
+      </div>
+    </div>
+    
+    <div class="flex justify-between items-center">
+      <span class="font-semibold">Branches:</span>
+      <div class="flex items-center gap-2">
+        <div 
+          class="w-6 h-6 rounded border border-gris" 
+          style={`background-color: ${branchesColor}`}
+        ></div>
+        <span class="text-sm">{glasses.expand?.id_mat_b?.libelle_mat_b || 'N/A'}</span>
+      </div>
+    </div>
+    
+    {glasses.verres && (
+      <div class="flex justify-between items-center">
+        <span class="font-semibold">Verres:</span>
+        <span class="text-sm capitalize">{glasses.verres}</span>
+      </div>
+    )}
+    
+    {glasses.largeur_pont && (
+      <div class="flex justify-between items-center">
+        <span class="font-semibold">Pont:</span>
+        <span class="text-sm">{glasses.largeur_pont}mm</span>
+      </div>
+    )}
+    
+    <div class="text-xs text-gris mt-2">
+      Créé le {new Date(glasses.created).toLocaleDateString('fr-FR')}
+    </div>
+  </div>
+
+  <div class="actions mt-4 flex gap-2">
+    <a 
+      href={`/creer-lunettes?id=${glasses.id}`}
+      class="btn btn-sm bg-vert text-blanc hover:bg-grisA flex-1 rounded-xs"
+    >
+      Modifier
+    </a>
+    <button 
+      class="btn btn-sm bg-error text-blanc hover:bg-error/80 rounded-xs delete-btn"
+      data-id={glasses.id}
+    >
+      Supprimer
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+      const id = target.dataset.id;
+      
+      if (!confirm('Êtes-vous sûr de vouloir supprimer ces lunettes ?')) return;
+
+      try {
+        const response = await fetch(`/api/lunettes/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert('Erreur lors de la suppression');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Erreur de connexion');
+      }
+    });
+  });
+</script>

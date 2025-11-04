@@ -1,0 +1,588 @@
+---
+import CustomizableGlasses from '../components/CustomizableGlasses.astro';
+import pb from '../../backend/backend.mjs';
+
+// Get all materials for dropdowns
+const materialsMonture = await pb.collection('Mat_monture').getFullList();
+const materialsBranches = await pb.collection('Mat_branches').getFullList();
+
+interface Props {
+  lunetteId?: string;
+}
+
+const { lunetteId } = Astro.props;
+
+let existingGlasses = null;
+if (lunetteId) {
+  existingGlasses = await pb.collection('Lunette').getOne(lunetteId, {
+    expand: 'id_mat_m,id_mat_b'
+  });
+}
+
+// Predefined color swatches
+const colorSwatches = [
+  '#C0C0C0', '#A9A9A9', '#808080',
+  '#696969', '#404040', '#000000'
+];
+
+// Predefined lens types
+const lensTypes = [
+  { value: 'claire', label: 'Verres clairs' },
+  { value: 'solaire', label: 'Lunettes de soleil' },
+  { value: 'lumiere-bleue', label: 'Lumière bleue' },
+  { value: 'progressif', label: 'Progressifs' },
+  { value: 'anti-reflet', label: 'Anti-reflet' },
+  { value: 'photochromique', label: 'Photochromiques' }
+];
+---
+
+<div class="glasses-configurator min-h-screen bg-[#F5F5F5] flex flex-col">
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-full mx-auto">
+    
+    <div class="bg-blanc border-r border-gris p-6 lg:p-8 flex flex-col">
+      <form id="glasses-form" class="flex-1 flex flex-col">
+        
+        <!-- Name and Price Inputs (always visible) -->
+        <div class="mb-6 space-y-3">
+          <input 
+            type="text" 
+            id="nom-lunettes" 
+            name="nom"
+            value={existingGlasses?.nom || ''}
+            class="input input-bordered w-full bg-blanc border-gris text-grisA"
+            placeholder="Nom de vos lunettes"
+            required
+          />
+          <input 
+            type="number" 
+            id="prix-lunettes" 
+            name="prix"
+            value={existingGlasses?.prix || '80'}
+            min="0"
+            step="0.01"
+            class="input input-bordered w-full bg-blanc border-gris text-grisA"
+            placeholder="Prix (€)"
+            required
+          />
+        </div>
+        
+        <div role="tablist" class="tabs tabs-bordered mb-6">
+          <a role="tab" class="tab tab-active text-grisA font-medium text-xs sm:text-sm" data-tab="branches">Branches</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="monture">Monture</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="verres">Verres</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="largeur">Largeur</a>
+        </div>
+
+        <div id="tab-branches" class="tab-content flex-1 flex flex-col">
+          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          
+          <div class="mb-8">
+            <h4 class="text-xl font-bold text-grisA mb-4">Branches</h4>
+            
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              {colorSwatches.map((color) => (
+                <button 
+                  type="button"
+                  class="color-swatch aspect-square rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer"
+                  style={`background-color: ${color}`}
+                  data-color={color}
+                  data-target="branches"
+                />
+              ))}
+            </div>
+            
+            <select 
+              id="branches-material" 
+              name="id_mat_b"
+              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3"
+              required
+            >
+              <option disabled selected>Matériau des branches</option>
+              {materialsBranches.map((mat) => (
+                <option 
+                  value={mat.id}
+                  selected={existingGlasses?.id_mat_b === mat.id}
+                >
+                  {mat.libelle_mat_b}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div class="mt-auto mb-6">
+            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-branches">80</span>€</p>
+          </div>
+
+          <button 
+            type="button" 
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            data-next="monture"
+          >
+            Continuer
+          </button>
+        </div>
+
+        <div id="tab-monture" class="tab-content flex-1 flex-col" style="display: none;">
+          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          
+          <div class="mb-8">
+            <h4 class="text-xl font-bold text-grisA mb-4">Monture</h4>
+            
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              {colorSwatches.map((color) => (
+                <button 
+                  type="button"
+                  class="color-swatch aspect-square rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer"
+                  style={`background-color: ${color}`}
+                  data-color={color}
+                  data-target="monture"
+                />
+              ))}
+            </div>
+            
+            <select 
+              id="monture-material" 
+              name="id_mat_m"
+              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3"
+              required
+            >
+              <option disabled selected>Matériau de la monture</option>
+              {materialsMonture.map((mat) => (
+                <option 
+                  value={mat.id}
+                  selected={existingGlasses?.id_mat_m === mat.id}
+                >
+                  {mat.libelle_mat_m}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div class="mt-auto mb-6">
+            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-monture">80</span>€</p>
+          </div>
+
+          <button 
+            type="button" 
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            data-next="verres"
+          >
+            Continuer
+          </button>
+        </div>
+
+        <div id="tab-verres" class="tab-content flex-1 flex-col" style="display: none;">
+          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          
+          <div class="mb-8">
+            <h4 class="text-xl font-bold text-grisA mb-4">Type de verres</h4>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+              {lensTypes.map((lens) => (
+                <button 
+                  type="button"
+                  class="lens-type-btn p-4 rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer text-center"
+                  data-lens-type={lens.value}
+                >
+                  <div class="text-sm font-medium text-grisA">{lens.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div class="mt-auto mb-6">
+            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-verres">80</span>€</p>
+          </div>
+
+          <button 
+            type="button" 
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            data-next="largeur"
+          >
+            Continuer
+          </button>
+        </div>
+
+        <div id="tab-largeur" class="tab-content flex-1 flex-col" style="display: none;">
+          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          
+          <div class="mb-8">
+            <h4 class="text-xl font-bold text-grisA mb-4">Largeur du pont</h4>
+            
+            <p class="text-sm text-gris mb-6">
+              Ajustez la largeur du pont pour un confort optimal
+            </p>
+            
+            <div class="mb-4">
+              <input 
+                type="range" 
+                id="largeur-pont" 
+                name="largeur_pont"
+                min="14" 
+                max="24" 
+                value={existingGlasses?.largeur_pont || '18'}
+                class="range range-sm"
+                step="1"
+              />
+              <div class="flex justify-between text-xs text-gris px-2 mt-2">
+                <span>14mm</span>
+                <span>19mm</span>
+                <span>24mm</span>
+              </div>
+            </div>
+            
+            <div class="text-center mb-6">
+              <p class="text-sm text-gris mb-2">Largeur sélectionnée</p>
+              <p class="text-3xl font-bold text-grisA">
+                <span id="largeur-value">{existingGlasses?.largeur_pont || '18'}</span>mm
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-auto mb-6">
+            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-largeur">80</span>€</p>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn bg-vert text-blanc hover:bg-vert/90 border-none w-full"
+          >
+            {lunetteId ? 'Mettre à jour' : 'Finaliser'}
+          </button>
+        </div>
+
+        <!-- Hidden Inputs -->
+        <input type="hidden" id="branches-color" name="branches" value={existingGlasses?.branches || '#C0C0C0'} />
+        <input type="hidden" id="monture-color" name="monture" value={existingGlasses?.monture || '#C0C0C0'} />
+        <input type="hidden" id="verres-type" name="verres" value={existingGlasses?.verres || 'claire'} />
+        <input type="hidden" id="code-svg" name="code_SVG" />
+
+      </form>
+      <p id="status" class="mt-4 text-center"></p>
+    </div>
+
+    <div class="bg-blanc p-6 lg:p-12 flex flex-col items-center justify-center relative">
+      <div id="glasses-preview" class="w-full max-w-2xl mb-8">
+        <CustomizableGlasses 
+          montureColor={existingGlasses?.monture || '#C0C0C0'}
+          brancheColor={existingGlasses?.branches || '#C0C0C0'}
+          strokeColor="#1D1D1B"
+          className="glasses-svg w-full h-auto"
+        />
+      </div>
+
+      <div class="absolute bottom-8 right-8 flex items-center gap-2">
+        <div id="progress-circle" class="radial-progress text-grisA" style="--value:25; --size:3rem; --thickness: 3px;" role="progressbar">
+          <span class="text-xs font-bold" id="progress-text">25%</span>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-grisA">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+        </svg>
+      </div>
+
+  <div class="bg-blanc border-t border-gris py-6">
+    <div class="max-w-4xl mx-auto px-6">
+      <ul class="steps w-full">
+        <li class="step step-neutral" data-step="branches">
+          <span class="text-sm font-medium text-grisA">Branches</span>
+        </li>
+        <li class="step" data-step="monture">
+          <span class="text-sm font-medium text-gris">Monture</span>
+        </li>
+        <li class="step" data-step="verres">
+          <span class="text-sm font-medium text-gris">Verres</span>
+        </li>
+        <li class="step" data-step="largeur">
+          <span class="text-sm font-medium text-gris">Largeur<br>du pont</span>
+        </li>
+        <li class="step" data-step="finalisation">
+          <span class="text-sm font-medium text-gris">Finalisation</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .color-swatch {
+    transition: all 0.2s ease;
+  }
+  
+  .color-swatch:hover {
+    transform: scale(1.05);
+  }
+  
+  .color-swatch.active {
+    border-color: #1D1D1B !important;
+    box-shadow: 0 0 0 2px #1D1D1B;
+  }
+
+  .lens-type-btn {
+    transition: all 0.2s ease;
+  }
+
+  .lens-type-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .lens-type-btn.active {
+    border-color: #1D1D1B !important;
+    background-color: #F5F5F5;
+  }
+
+  .tab {
+    border-bottom: 2px solid transparent;
+  }
+
+  .tab-active {
+    border-bottom-color: #1D1D1B !important;
+    font-weight: 600;
+  }
+
+  .tab-content {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .steps .step::before {
+    background-color: #D1D5DB;
+  }
+
+  .steps .step-neutral::before {
+    background-color: #1D1D1B;
+  }
+</style>
+
+<script define:vars={{ lunetteId }}>
+  let currentStep = 0;
+  const stepNames = ['branches', 'monture', 'verres', 'largeur'];
+  const progressPercentages = [25, 50, 75, 100];
+
+  const tabs = document.querySelectorAll('[data-tab]');
+  const tabContents = {
+    'branches': document.getElementById('tab-branches'),
+    'monture': document.getElementById('tab-monture'),
+    'verres': document.getElementById('tab-verres'),
+    'largeur': document.getElementById('tab-largeur')
+  };
+
+  function switchToTab(tabName) {
+    const tabIndex = stepNames.indexOf(tabName);
+    if (tabIndex !== -1) {
+      currentStep = tabIndex;
+    }
+
+    tabs.forEach(t => t.classList.remove('tab-active'));
+    const activeTab = Array.from(tabs).find(t => t.dataset.tab === tabName);
+    if (activeTab) activeTab.classList.add('tab-active');
+    
+    Object.entries(tabContents).forEach(([name, content]) => {
+      if (name === tabName) {
+        content.style.display = 'flex';
+      } else {
+        content.style.display = 'none';
+      }
+    });
+
+    updateProgress();
+    updateSteps();
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchToTab(tab.dataset.tab);
+    });
+  });
+
+  const continueBtns = document.querySelectorAll('.continue-btn');
+  continueBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nextTab = btn.dataset.next;
+      if (nextTab) {
+        switchToTab(nextTab);
+      }
+    });
+  });
+
+  function updateProgress() {
+    const progressCircle = document.getElementById('progress-circle');
+    const progressText = document.getElementById('progress-text');
+    const percentage = progressPercentages[currentStep];
+    
+    progressCircle.style.setProperty('--value', percentage);
+    progressText.textContent = `${percentage}%`;
+  }
+
+  function updateSteps() {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach((step, index) => {
+      if (index <= currentStep) {
+        step.classList.add('step-neutral');
+      } else {
+        step.classList.remove('step-neutral');
+      }
+    });
+  }
+
+  const colorSwatches = document.querySelectorAll('.color-swatch');
+  const branchesColorInput = document.getElementById('branches-color');
+  const montureColorInput = document.getElementById('monture-color');
+  const glassesSvg = document.querySelector('.glasses-svg');
+
+  colorSwatches.forEach(swatch => {
+    swatch.addEventListener('click', (e) => {
+      const color = swatch.dataset.color;
+      const target = swatch.dataset.target;
+      
+      const siblings = swatch.parentElement.querySelectorAll('.color-swatch');
+      siblings.forEach(s => s.classList.remove('active'));
+      
+      swatch.classList.add('active');
+      
+      if (target === 'branches') {
+        branchesColorInput.value = color;
+        glassesSvg.style.setProperty('--branche-color', color);
+      } else if (target === 'monture') {
+        montureColorInput.value = color;
+        glassesSvg.style.setProperty('--monture-color', color);
+      }
+      
+      updateCodeSVG();
+    });
+  });
+
+  const lensTypeBtns = document.querySelectorAll('.lens-type-btn');
+  const verresTypeInput = document.getElementById('verres-type');
+
+  lensTypeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lensType = btn.dataset.lensType;
+      
+      lensTypeBtns.forEach(b => b.classList.remove('active'));
+      
+      btn.classList.add('active');
+      
+      verresTypeInput.value = lensType;
+    });
+  });
+
+  const largeurSlider = document.getElementById('largeur-pont');
+  const largeurValue = document.getElementById('largeur-value');
+
+  if (largeurSlider) {
+    largeurSlider.addEventListener('input', (e) => {
+      largeurValue.textContent = e.target.value;
+    });
+  }
+
+  function updateCodeSVG() {
+    const montureColor = montureColorInput.value;
+    const branchesColor = branchesColorInput.value;
+    const svgCode = `monture:${montureColor},branches:${branchesColor}`;
+    document.getElementById('code-svg').value = svgCode;
+  }
+
+  const initialMontureColor = montureColorInput.value;
+  const initialBranchesColor = branchesColorInput.value;
+  glassesSvg.style.setProperty('--monture-color', initialMontureColor);
+  glassesSvg.style.setProperty('--branche-color', initialBranchesColor);
+  updateCodeSVG();
+
+  colorSwatches.forEach(swatch => {
+    const color = swatch.dataset.color;
+    const target = swatch.dataset.target;
+    if (target === 'branches' && color === initialBranchesColor) {
+      swatch.classList.add('active');
+    } else if (target === 'monture' && color === initialMontureColor) {
+      swatch.classList.add('active');
+    }
+  });
+
+  const initialLensType = verresTypeInput.value;
+  lensTypeBtns.forEach(btn => {
+    if (btn.dataset.lensType === initialLensType) {
+      btn.classList.add('active');
+    }
+  });
+
+  const form = document.getElementById('glasses-form');
+  const status = document.getElementById('status');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!user.id) {
+      status.textContent = 'Vous devez être connecté pour créer des lunettes';
+      status.className = 'mt-4 text-center text-error';
+      return;
+    }
+
+    const data = {
+      nom: formData.get('nom'),
+      prix: parseFloat(formData.get('prix')),
+      code_SVG: formData.get('code_SVG'),
+      verres: formData.get('verres'),
+      branches: formData.get('branches'),
+      monture: formData.get('monture'),
+      largeur_pont: formData.get('largeur_pont'),
+      id_mat_b: formData.get('id_mat_b'),
+      id_mat_m: formData.get('id_mat_m'),
+      id_user: user.id
+    };
+
+    try {
+      let response;
+      if (lunetteId) {
+        response = await fetch(`/api/lunettes/${lunetteId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include'
+        });
+      } else {
+        response = await fetch('/api/lunettes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include'
+        });
+      }
+
+      if (response.ok) {
+        status.textContent = lunetteId ? 'Lunettes mises à jour !' : 'Lunettes créées avec succès !';
+        status.className = 'mt-4 text-center text-success';
+        
+        if (!lunetteId) {
+          setTimeout(() => {
+            window.location.href = '/profil';
+          }, 1500);
+        }
+      } else {
+        const error = await response.json();
+        status.textContent = error.error || 'Une erreur est survenue';
+        status.className = 'mt-4 text-center text-error';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      status.textContent = 'Erreur de connexion';
+      status.className = 'mt-4 text-center text-error';
+    }
+  });
+
+  const savePreviewBtn = document.getElementById('save-preview');
+  savePreviewBtn?.addEventListener('click', () => {
+    // TODO: Implement save preview functionality
+    alert('Aperçu sauvegardé !');
+  });
+
+  updateProgress();
+  updateSteps();
+</script>

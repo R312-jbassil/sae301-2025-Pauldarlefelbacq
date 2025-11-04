@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../layouts/Header.astro";
+import GlassesConfigurator from "../components/GlassesConfigurator.astro";
+
+const user = Astro.locals.user;
+if (!user) {
+    return Astro.redirect('/connection');
+}
+
+const lunetteId = Astro.url.searchParams.get('id') || undefined;
+---
+
+<Layout title="Créer mes lunettes">
+    <Header />
+    <main class="min-h-screen bg-blanc py-8">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold text-center mb-8 text-grisA mt-24">
+                {lunetteId ? 'Modifier mes lunettes' : 'Créer mes lunettes'}
+            </h1>
+            <GlassesConfigurator lunetteId={lunetteId} />
+        </div>
+    </main>
+</Layout>

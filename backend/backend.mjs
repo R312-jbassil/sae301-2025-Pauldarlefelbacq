@@ -9,5 +9,16 @@ export async function listeLunettes() {
 };
 
 export async function lunettesParUser(id) {
-    const records = await pb.collection('Lunette')
-}
+    const recordsLunettes = await pb.collection('Lunette').getFullList({filter: `id_user = '${id}'`, expand: 'id_mat_m,id_mat_b'});
+    return recordsLunettes;
+};
+
+export async function getMateriauxMonture() {
+    const records = await pb.collection('Mat_monture').getFullList();
+    return records;
+};
+
+export async function getMateriauxBranches() {
+    const records = await pb.collection('Mat_branches').getFullList();
+    return records;
+};

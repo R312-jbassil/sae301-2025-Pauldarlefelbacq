@@ -1,10 +1,6 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro'
-import Button from '../components/Button.astro';
-
+import Lunette from "../assets/lunettes.svg";
 import pb from '../../backend/backend.mjs';
-
 const authCookie = Astro.cookies.get('pb_auth');
 let user = null;
 
@@ -13,9 +9,12 @@ if (authCookie) {
     if (pb.authStore.isValid) {
         user = pb.authStore.model;
     }
-}
+};
 ---
 
-<Layout title="Accueil">
-	<Hero />
-</Layout>
+<div class="p-1 w-2/10 h-auto text-grisA bg-blanc drop-shadow-sm drop-shadow-gris ">
+    <h2>Titre</h2>
+    <Lunette class="w-full h-auto my-5" />
+    <p>Priw</p>
+    <p class="italic">Date un peu</p>
+</div>
