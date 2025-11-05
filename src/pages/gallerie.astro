@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CardLunette from '../components/CardLunette.astro';
+import { lunettesParUser } from "../../backend/backend.mjs";
+
+import pb from '../../backend/backend.mjs';
+const authCookie = Astro.cookies.get('pb_auth');
+let user = null;
+
+if (authCookie) {
+    pb.authStore.loadFromCookie(authCookie.value);
+    if (pb.authStore.isValid) {
+        user = pb.authStore.model;
+    }
+};
+if (!user) {
+    return Astro.redirect('/connection');
+}
+
+const lunettes = await lunettesParUser(user.id);
+---
+<Layout>
+    <div class=" mt-34">
+        <h2 class="text-grisA mb-4">Vos lunettes sauvegardées</h2>
+            {lunettes.length === 0 ?
+                <h2>Aucune lunettes disponibles</h2>
+                :
+                <div class="grid grid-cols-3 gap-10 mb-24 mx-10 place-content-between justify-center ">
+                    {lunettes.map((lunette) => (
+                        <CardLunette lunette={lunette} />
+                    ))}
+                </div>
+            }
+        </div>
+</Layout>

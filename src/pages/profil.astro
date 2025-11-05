@@ -15,7 +15,7 @@ if (authCookie) {
     }
 };
 if (!user) {
-    return Astro.redirect('/login');
+    return Astro.redirect('/connection');
 }
 
 const lunettes = (await lunettesParUser(user.id)).slice(0,2);
@@ -57,6 +57,7 @@ const lunettes = (await lunettesParUser(user.id)).slice(0,2);
                     ))}
                 </div>
             }
+            <a class="btn bg-blanc text-grisA hover:bg-vert hover:text-blanc" href="/gallerie">Voir plus</a>
         </div>
     </div>
 </Layout>
