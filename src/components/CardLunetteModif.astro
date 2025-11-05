@@ -112,7 +112,7 @@ if (glasses?.branches) branchesColor = glasses.branches;
       if (!confirm('Êtes-vous sûr de vouloir supprimer ces lunettes ?')) return;
 
       try {
-        const response = await fetch(`/api/lunettes/${id}`, {
+        const response = await fetch(`/apis/lunettes/${id}`, {
           method: 'DELETE',
           credentials: 'include'
         });

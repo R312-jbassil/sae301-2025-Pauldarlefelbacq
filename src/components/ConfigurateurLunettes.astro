@@ -540,14 +540,14 @@ const lensTypes = [
     try {
       let response;
       if (lunetteId) {
-        response = await fetch(`/api/lunettes/${lunetteId}`, {
+        response = await fetch(`/apis/lunettes/${lunetteId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
           credentials: 'include'
         });
       } else {
-        response = await fetch('/api/lunettes', {
+        response = await fetch('/apis/lunettes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
