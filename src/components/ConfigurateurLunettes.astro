@@ -26,15 +26,23 @@ const colorSwatches = [
   '#696969', '#404040', '#000000'
 ];
 
-// Predefined lens types
+// Predefined lens types with prices
 const lensTypes = [
-  { value: 'claire', label: 'Verres clairs' },
-  { value: 'solaire', label: 'Lunettes de soleil' },
-  { value: 'lumiere-bleue', label: 'Lumière bleue' },
-  { value: 'progressif', label: 'Progressifs' },
-  { value: 'anti-reflet', label: 'Anti-reflet' },
-  { value: 'photochromique', label: 'Photochromiques' }
+  { value: 'claire', label: 'Verres clairs', price: 0 },
+  { value: 'solaire', label: 'Lunettes de soleil', price: 30 },
+  { value: 'lumiere-bleue', label: 'Lumière bleue', price: 25 },
+  { value: 'progressif', label: 'Progressifs', price: 80 },
+  { value: 'anti-reflet', label: 'Anti-reflet', price: 15 },
+  { value: 'photochromique', label: 'Photochromiques', price: 60 }
 ];
+
+// Material prices mapping (you can adjust these)
+const materialPrices: Record<string, number> = {
+  'bois': 10,
+  'acier': 20,
+  'carbone': 50,
+  'or': 150,
+};
 
 // Mapping des couleurs pour chaque type de verres
 const lensColors: Record<string, string> = {
@@ -53,46 +61,50 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
 <div class="glasses-configurator min-h-screen bg-[#F5F5F5] flex flex-col">
   <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-full mx-auto">
     
-    <div class="bg-blanc border-r border-gris p-6 lg:p-8 flex flex-col">
+    <div class="bg-blanc border-r border-gris p-4 sm:p-6 lg:p-8 flex flex-col">
       <form id="glasses-form" class="flex-1 flex flex-col">
         
-        <div class="mb-6 space-y-3">
+        <div class="mb-4 sm:mb-6 space-y-3">
           <input 
             type="text" 
             id="Nom-lunettes" 
             name="Nom"
             value={existingGlasses?.Nom || ''}
-            class="input input-bordered w-full bg-blanc border-gris text-grisA"
+            class="input input-bordered w-full bg-blanc border-gris text-grisA text-sm sm:text-base"
             placeholder="Nom de vos lunettes"
             required
           />
-          <input 
-            type="number" 
-            id="prix-lunettes" 
-            name="prix"
-            value={existingGlasses?.prix || '80'}
-            min="0"
-            step="0.01"
-            class="input input-bordered w-full bg-blanc border-gris text-grisA"
-            placeholder="Prix (€)"
-            required
-          />
+          <div class="relative">
+            <input 
+              type="number" 
+              id="prix-lunettes" 
+              name="prix"
+              value={existingGlasses?.prix || '50'}
+              min="0"
+              step="0.01"
+              class="input input-bordered w-full bg-[#F5F5F5] border-gris text-grisA font-bold cursor-not-allowed text-sm sm:text-base"
+              placeholder="Prix (€)"
+              readonly
+              required
+            />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gris hidden sm:inline">Calculé automatiquement</span>
+          </div>
         </div>
         
-        <div role="tablist" class="tabs tabs-bordered mb-6">
-          <a role="tab" class="tab tab-active text-grisA font-medium text-xs sm:text-sm" data-tab="branches">Branches</a>
-          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="monture">Monture</a>
-          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="verres">Verres</a>
-          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm" data-tab="largeur">Largeur</a>
+        <div role="tablist" class="tabs tabs-bordered mb-4 sm:mb-6 overflow-x-auto">
+          <a role="tab" class="tab tab-active text-grisA font-medium text-xs sm:text-sm whitespace-nowrap" data-tab="branches">Branches</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm whitespace-nowrap" data-tab="monture">Monture</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm whitespace-nowrap" data-tab="verres">Verres</a>
+          <a role="tab" class="tab text-grisA font-medium text-xs sm:text-sm whitespace-nowrap" data-tab="largeur">Largeur</a>
         </div>
 
         <div id="tab-branches" class="tab-content flex-1 flex flex-col">
-          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          <h3 class="text-xs sm:text-sm text-grisA mb-4 sm:mb-6">Personnalisation</h3>
           
-          <div class="mb-8">
-            <h4 class="text-xl font-bold text-grisA mb-4">Branches</h4>
+          <div class="mb-6 sm:mb-8">
+            <h4 class="text-lg sm:text-xl font-bold text-grisA mb-3 sm:mb-4">Branches</h4>
             
-            <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
               {colorSwatches.map((color) => (
                 <button 
                   type="button"
@@ -107,28 +119,33 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
             <select 
               id="branches-material" 
               name="id_mat_b"
-              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3"
+              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3 text-sm sm:text-base"
               required
             >
               <option disabled selected>Matériau des branches</option>
-              {materialsBranches.map((mat) => (
-                <option 
-                  value={mat.id}
-                  selected={existingGlasses?.id_mat_b === mat.id}
-                >
-                  {mat.libelle_mat_b}
-                </option>
-              ))}
+              {materialsBranches.map((mat) => {
+                const matName = mat.libelle_mat_b?.toLowerCase() || '';
+                const price = materialPrices[matName] || 0;
+                return (
+                  <option 
+                    value={mat.id}
+                    selected={existingGlasses?.id_mat_b === mat.id}
+                    data-price={price}
+                  >
+                    {mat.libelle_mat_b} {price > 0 ? `(+${price}€)` : ''}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
-          <div class="mt-auto mb-6">
-            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-branches">80</span>€</p>
+          <div class="mt-auto mb-4 sm:mb-6">
+            <p class="text-xl sm:text-2xl font-bold text-grisA">Prix : <span id="price-branches">80</span>€</p>
           </div>
 
           <button 
             type="button" 
-            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full text-sm sm:text-base"
             data-next="monture"
           >
             Continuer
@@ -136,12 +153,12 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         </div>
 
         <div id="tab-monture" class="tab-content flex-1 flex-col" style="display: none;">
-          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          <h3 class="text-xs sm:text-sm text-grisA mb-4 sm:mb-6">Personnalisation</h3>
           
-          <div class="mb-8">
-            <h4 class="text-xl font-bold text-grisA mb-4">Monture</h4>
+          <div class="mb-6 sm:mb-8">
+            <h4 class="text-lg sm:text-xl font-bold text-grisA mb-3 sm:mb-4">Monture</h4>
             
-            <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
               {colorSwatches.map((color) => (
                 <button 
                   type="button"
@@ -156,28 +173,33 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
             <select 
               id="monture-material" 
               name="id_mat_m"
-              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3"
+              class="select select-bordered w-full bg-blanc border-gris text-grisA mb-3 text-sm sm:text-base"
               required
             >
               <option disabled selected>Matériau de la monture</option>
-              {materialsMonture.map((mat) => (
-                <option 
-                  value={mat.id}
-                  selected={existingGlasses?.id_mat_m === mat.id}
-                >
-                  {mat.libelle_mat_m}
-                </option>
-              ))}
+              {materialsMonture.map((mat) => {
+                const matName = mat.libelle_mat_m?.toLowerCase() || '';
+                const price = materialPrices[matName] || 0;
+                return (
+                  <option 
+                    value={mat.id}
+                    selected={existingGlasses?.id_mat_m === mat.id}
+                    data-price={price}
+                  >
+                    {mat.libelle_mat_m} {price > 0 ? `(+${price}€)` : ''}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
-          <div class="mt-auto mb-6">
-            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-monture">80</span>€</p>
+          <div class="mt-auto mb-4 sm:mb-6">
+            <p class="text-xl sm:text-2xl font-bold text-grisA">Prix : <span id="price-monture">80</span>€</p>
           </div>
 
           <button 
             type="button" 
-            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full text-sm sm:text-base"
             data-next="verres"
           >
             Continuer
@@ -185,31 +207,33 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         </div>
 
         <div id="tab-verres" class="tab-content flex-1 flex-col" style="display: none;">
-          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          <h3 class="text-xs sm:text-sm text-grisA mb-4 sm:mb-6">Personnalisation</h3>
           
-          <div class="mb-8">
-            <h4 class="text-xl font-bold text-grisA mb-4">Type de verres</h4>
+          <div class="mb-6 sm:mb-8">
+            <h4 class="text-lg sm:text-xl font-bold text-grisA mb-3 sm:mb-4">Type de verres</h4>
             
-            <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
               {lensTypes.map((lens) => (
                 <button 
                   type="button"
-                  class="lens-type-btn p-4 rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer text-center"
+                  class="lens-type-btn p-3 sm:p-4 rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer"
                   data-lens-type={lens.value}
+                  data-lens-price={lens.price}
                 >
-                  <div class="text-sm font-medium text-grisA">{lens.label}</div>
+                  <div class="text-xs sm:text-sm font-medium text-grisA mb-1">{lens.label}</div>
+                  <div class="text-xs text-vert font-semibold">+{lens.price}€</div>
                 </button>
               ))}
             </div>
           </div>
 
-          <div class="mt-auto mb-6">
-            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-verres">80</span>€</p>
+          <div class="mt-auto mb-4 sm:mb-6">
+            <p class="text-xl sm:text-2xl font-bold text-grisA">Prix : <span id="price-verres">80</span>€</p>
           </div>
 
           <button 
             type="button" 
-            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full"
+            class="continue-btn btn btn-outline border-grisA text-grisA hover:bg-grisA hover:text-blanc w-full text-sm sm:text-base"
             data-next="largeur"
           >
             Continuer
@@ -217,12 +241,12 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         </div>
 
         <div id="tab-largeur" class="tab-content flex-1 flex-col" style="display: none;">
-          <h3 class="text-sm text-grisA mb-6">Personnalisation</h3>
+          <h3 class="text-xs sm:text-sm text-grisA mb-4 sm:mb-6">Personnalisation</h3>
           
-          <div class="mb-8">
-            <h4 class="text-xl font-bold text-grisA mb-4">Largeur du pont</h4>
+          <div class="mb-6 sm:mb-8">
+            <h4 class="text-lg sm:text-xl font-bold text-grisA mb-3 sm:mb-4">Largeur du pont</h4>
             
-            <p class="text-sm text-gris mb-6">
+            <p class="text-xs sm:text-sm text-gris mb-4 sm:mb-6">
               Ajustez la largeur du pont pour un confort optimal
             </p>
             
@@ -252,13 +276,13 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
             </div>
           </div>
 
-          <div class="mt-auto mb-6">
-            <p class="text-2xl font-bold text-grisA">Prix : <span id="price-largeur">80</span>€</p>
+          <div class="mt-auto mb-4 sm:mb-6">
+            <p class="text-xl sm:text-2xl font-bold text-grisA">Prix : <span id="price-largeur">80</span>€</p>
           </div>
 
           <button 
             type="submit" 
-            class="btn bg-vert text-blanc hover:bg-vert/90 border-none w-full"
+            class="btn bg-vert text-blanc hover:bg-vert/90 border-none w-full text-sm sm:text-base"
           >
             {lunetteId ? 'Mettre à jour' : 'Finaliser'}
           </button>
@@ -271,11 +295,11 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         <input type="hidden" id="code-svg" name="code_SVG" />
 
       </form>
-      <p id="status" class="mt-4 text-center"></p>
+      <p id="status" class="mt-4 text-center text-sm sm:text-base"></p>
     </div>
 
-    <div class="bg-blanc p-6 lg:p-12 flex flex-col items-center justify-center relative">
-      <div id="glasses-preview" class="w-full max-w-2xl mb-8">
+    <div class="bg-blanc p-4 sm:p-6 lg:p-12 flex flex-col items-center justify-center relative min-h-[400px]">
+      <div id="glasses-preview" class="w-full max-w-full sm:max-w-2xl mb-6 sm:mb-8">
         <CustomisationLunettes 
           montureColor={existingGlasses?.monture || '#C0C0C0'}
           brancheColor={existingGlasses?.branches || '#C0C0C0'}
@@ -285,32 +309,34 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         />
       </div>
 
-      <div class="absolute bottom-8 right-8 flex items-center gap-2">
-        <div id="progress-circle" class="radial-progress text-grisA" style="--value:25; --size:3rem; --thickness: 3px;" role="progressbar">
+      <div class="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 flex items-center gap-2">
+        <div id="progress-circle" class="radial-progress text-grisA" style="--value:25; --size:2.5rem; --thickness: 3px;" role="progressbar">
           <span class="text-xs font-bold" id="progress-text">25%</span>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-grisA">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-        </svg>
       </div>
 
-  <div class="bg-blanc border-t border-gris py-6">
-    <div class="max-w-4xl mx-auto px-6">
+  <div class="bg-blanc border-t border-gris py-4 sm:py-6">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
       <ul class="steps w-full">
         <li class="step step-neutral" data-step="branches">
-          <span class="text-sm font-medium text-grisA">Branches</span>
+          <span class="text-xs sm:text-sm font-medium text-grisA hidden sm:inline">Branches</span>
+          <span class="text-xs sm:text-sm font-medium text-grisA sm:hidden">1</span>
         </li>
         <li class="step" data-step="monture">
-          <span class="text-sm font-medium text-gris">Monture</span>
+          <span class="text-xs sm:text-sm font-medium text-gris hidden sm:inline">Monture</span>
+          <span class="text-xs sm:text-sm font-medium text-gris sm:hidden">2</span>
         </li>
         <li class="step" data-step="verres">
-          <span class="text-sm font-medium text-gris">Verres</span>
+          <span class="text-xs sm:text-sm font-medium text-gris hidden sm:inline">Verres</span>
+          <span class="text-xs sm:text-sm font-medium text-gris sm:hidden">3</span>
         </li>
         <li class="step" data-step="largeur">
-          <span class="text-sm font-medium text-gris">Largeur<br>du pont</span>
+          <span class="text-xs sm:text-sm font-medium text-gris hidden sm:inline">Largeur<br>du pont</span>
+          <span class="text-xs sm:text-sm font-medium text-gris sm:hidden">4</span>
         </li>
         <li class="step" data-step="finalisation">
-          <span class="text-sm font-medium text-gris">Finalisation</span>
+          <span class="text-xs sm:text-sm font-medium text-gris hidden sm:inline">Finalisation</span>
+          <span class="text-xs sm:text-sm font-medium text-gris sm:hidden">✓</span>
         </li>
       </ul>
     </div>
@@ -497,6 +523,9 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       // Mettre à jour la couleur des verres dans le SVG
       const verresColor = lensColors[lensType] || 'transparent';
       glassesSvg.style.setProperty('--verres-color', verresColor);
+      
+      // Recalculer le prix total
+      calculateTotalPrice();
     });
   });
 
@@ -506,6 +535,96 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
   if (largeurSlider) {
     largeurSlider.addEventListener('input', (e) => {
       largeurValue.textContent = e.target.value;
+    });
+  }
+
+  // Prix de base
+  const BASE_PRICE = 50;
+  const prixInput = document.getElementById('prix-lunettes');
+  const priceDisplays = ['price-branches', 'price-monture', 'price-verres', 'price-largeur'];
+
+  // Fonction pour calculer le prix total automatiquement
+  function calculateTotalPrice() {
+    let total = BASE_PRICE;
+    
+    // Prix du matériau des branches
+    const branchesMaterial = document.getElementById('branches-material');
+    if (branchesMaterial && branchesMaterial.selectedIndex > 0) {
+      const selectedOption = branchesMaterial.options[branchesMaterial.selectedIndex];
+      const branchesPrice = parseFloat(selectedOption.dataset.price) || 0;
+      total += branchesPrice;
+    }
+    
+    // Prix du matériau de la monture
+    const montureMaterial = document.getElementById('monture-material');
+    if (montureMaterial && montureMaterial.selectedIndex > 0) {
+      const selectedOption = montureMaterial.options[montureMaterial.selectedIndex];
+      const monturePrice = parseFloat(selectedOption.dataset.price) || 0;
+      total += monturePrice;
+    }
+    
+    // Prix des verres
+    const activeLensBtn = document.querySelector('.lens-type-btn.active');
+    if (activeLensBtn) {
+      const lensPrice = parseFloat(activeLensBtn.dataset.lensPrice) || 0;
+      total += lensPrice;
+    }
+    
+    // Mettre à jour l'input prix et tous les affichages
+    if (prixInput) {
+      prixInput.value = total.toFixed(2);
+    }
+    updatePriceDisplays();
+    
+    return total;
+  }
+
+  // Mettre à jour les affichages de prix
+  function updatePriceDisplays() {
+    const prix = prixInput ? prixInput.value : '50';
+    priceDisplays.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = prix;
+      }
+    });
+  }
+
+  // Écouter les changements de matériaux
+  const branchesMaterialSelect = document.getElementById('branches-material');
+  const montureMaterialSelect = document.getElementById('monture-material');
+  
+  // Fonction simple pour appliquer les textures
+  function applyTexture(materialName, target) {
+    const material = materialName?.toLowerCase() || '';
+    const textureMap = {
+      'bois': 'url(#texture-bois)',
+      'carbone': 'url(#texture-carbone)',
+      'or': 'url(#texture-or)'
+    };
+    
+    if (textureMap[material]) {
+      glassesSvg.style.setProperty(`--${target}-fill`, textureMap[material]);
+    } else {
+      glassesSvg.style.setProperty(`--${target}-fill`, '');
+    }
+  }
+  
+  if (branchesMaterialSelect) {
+    branchesMaterialSelect.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const materialName = selectedOption.textContent.split('(')[0].trim();
+      applyTexture(materialName, 'branche');
+      calculateTotalPrice();
+    });
+  }
+  
+  if (montureMaterialSelect) {
+    montureMaterialSelect.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const materialName = selectedOption.textContent.split('(')[0].trim();
+      applyTexture(materialName, 'monture');
+      calculateTotalPrice();
     });
   }
 
@@ -543,6 +662,13 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       btn.classList.add('active');
     }
   });
+
+  // Calculer le prix initial au chargement
+  calculateTotalPrice();
+  
+  // Initialiser l'affichage des prix
+  updateProgress();
+  updateSteps();
 
   const form = document.getElementById('glasses-form');
   const status = document.getElementById('status');

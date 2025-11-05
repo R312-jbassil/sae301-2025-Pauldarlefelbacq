@@ -39,9 +39,15 @@ const lensColors: Record<string, string> = {
 };
 
 const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparent') : 'transparent';
+
+// Récupérer les noms des matériaux
+const montureMaterial = glasses.expand?.id_mat_m?.libelle_mat_m?.toLowerCase() || '';
+const branchesMaterial = glasses.expand?.id_mat_b?.libelle_mat_b?.toLowerCase() || '';
 ---
 
-<div class="flex flex-col flex-wrap glasses-card bg-blanc p-2  shadow-md hover:shadow-lg transition-shadow">
+<div class="flex flex-col flex-wrap glasses-card bg-blanc p-2  shadow-md hover:shadow-lg transition-shadow"
+     data-monture-material={montureMaterial}
+     data-branches-material={branchesMaterial}>
   {glasses.Nom && (
     <h3 class="text-lg font-bold text-grisA mb-2">{glasses.Nom}</h3>
   )}
@@ -54,7 +60,7 @@ const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparen
       montureColor={montureColor}
       brancheColor={branchesColor}
       verresColor={verresColor}
-      className="w-full h-auto my-10"
+      className="w-full h-auto my-10 card-glasses-svg"
     />
   </div>
   
@@ -63,8 +69,9 @@ const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparen
       <span class="font-semibold">Monture:</span>
       <div class="flex items-center gap-2">
         <div 
-          class="w-6 h-6 rounded border border-gris" 
+          class="w-6 h-6 rounded border border-gris monture-preview" 
           style={`background-color: ${montureColor}`}
+          data-material={montureMaterial}
         ></div>
         <span class="text-sm">{glasses.expand?.id_mat_m?.libelle_mat_m || 'N/A'}</span>
       </div>
@@ -74,8 +81,9 @@ const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparen
       <span class="font-semibold">Branches:</span>
       <div class="flex items-center gap-2">
         <div 
-          class="w-6 h-6 rounded border border-gris" 
+          class="w-6 h-6 rounded border border-gris branches-preview" 
           style={`background-color: ${branchesColor}`}
+          data-material={branchesMaterial}
         ></div>
         <span class="text-sm">{glasses.expand?.id_mat_b?.libelle_mat_b || 'N/A'}</span>
       </div>
@@ -84,14 +92,14 @@ const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparen
     {glasses.verres && (
       <div class="flex justify-between items-center">
         <span class="font-semibold">Verres:</span>
-        <span class="text-sm capitalize">{glasses.verres}</span>
+        <span class="text-xs sm:text-sm capitalize truncate max-w-[120px]">{glasses.verres}</span>
       </div>
     )}
     
     {glasses.largeur_pont && (
       <div class="flex justify-between items-center">
         <span class="font-semibold">Pont:</span>
-        <span class="text-sm">{glasses.largeur_pont}mm</span>
+        <span class="text-xs sm:text-sm">{glasses.largeur_pont}mm</span>
       </div>
     )}
     
@@ -117,6 +125,41 @@ const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparen
 </div>
 
 <script>
+  document.querySelectorAll('.glasses-card').forEach(card => {
+    const svg = card.querySelector('.card-glasses-svg') as HTMLElement;
+    if (!svg) return;
+    
+    const montureMat = (card as HTMLElement).dataset.montureMaterial || '';
+    const branchesMat = (card as HTMLElement).dataset.branchesMaterial || '';
+    
+    const textureMap: Record<string, string> = {
+      'bois': 'url(#texture-bois)',
+      'carbone': 'url(#texture-carbone)',
+      'or': 'url(#texture-or)'
+    };
+    
+    if (textureMap[montureMat]) {
+      svg.style.setProperty('--monture-fill', textureMap[montureMat]);
+    }
+    
+    if (textureMap[branchesMat]) {
+      svg.style.setProperty('--branche-fill', textureMap[branchesMat]);
+    }
+    
+    const monturePreview = card.querySelector('.monture-preview') as HTMLElement;
+    const branchesPreview = card.querySelector('.branches-preview') as HTMLElement;
+    
+    if (monturePreview && textureMap[montureMat]) {
+      monturePreview.style.background = textureMap[montureMat];
+      monturePreview.style.backgroundSize = 'cover';
+    }
+    
+    if (branchesPreview && textureMap[branchesMat]) {
+      branchesPreview.style.background = textureMap[branchesMat];
+      branchesPreview.style.backgroundSize = 'cover';
+    }
+  });
+
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const target = e.target as HTMLElement;

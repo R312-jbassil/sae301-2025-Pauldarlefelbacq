@@ -21,43 +21,43 @@ if (!user) {
 const lunettes = (await lunettesParUser(user.id)).slice(0,2);
 ---
 <Layout title=`Profil de ${user.name}`>
-    <div class="flex w-full mt-34 gap-8">
-        <div class="flex-1">
-            <div class="flex place-items-center mb-6">
+    <div class="flex flex-col lg:flex-row w-full mt-20 sm:mt-24 lg:mt-34 gap-6 sm:gap-8 px-4 sm:px-6 lg:px-0">
+        <div class="flex-1 place-content-center">
+            <div class="flex flex-col place-items-center justify-center mb-4 sm:mb-6 gap-3">
                 {user.avatar 
                     ?
-                    <img src={user.avatar} alt=""> 
+                    <img src={user.avatar} alt="" class="w-34 h-34 sm:w-34 sm:h-34 rounded-full"> 
                     
                     : 
-                    <div tabindex="0"  class="btn bg-grisA btn-circle avatar">
-                        <div class="w-10 rounded-full">
-                            <span>{user.name.substring(0,1)}</span>
+                    <div tabindex="0"  class="btn bg-grisA btn-circle avatar w-34 h-34 sm:w-34 sm:h-34">
+                        <div class="w-10 sm:w-12 rounded-full ">
+                            <span class=" text-4xl ">{user.name.substring(0,1)}</span>
                         </div>
                     </div>
                 }
                 <div class="text-grisA">
-                    <h2>{user.name}</h2>
-                    <p>{user.email}</p>
+                    <h2 class="text-xl sm:text-2xl">{user.name}</h2>
+                    <p class="text-sm sm:text-base">{user.email}</p>
                 </div>
             </div>
-            <h2 class="text-grisA mb-4">Commandes récentes</h2>
-            <Lunette />
         </div>
         
-        <div class="divider divider-horizontal"></div>
+        <div class="divider divider-end divider-neutral lg:divider-horizontal my-6 lg:my-0">
+            <a class="btn bg-blanc text-grisA hover:bg-vert hover:text-blanc text-sm sm:text-base mb-24" href="/gallerie">Voir plus</a>
+        </div>
         
         <div class="flex-1">
-            <h2 class="text-grisA mb-4">Vos lunettes sauvegardées</h2>
+            <h2 class="text-grisA mb-3 sm:mb-4 text-lg sm:text-xl">Vos lunettes sauvegardées</h2>
             {lunettes.length === 0 ?
-                <h2>Aucune lunettes disponibles</h2>
+                <h2 class="text-base sm:text-lg">Aucune lunettes disponibles</h2>
                 :
-                <div class="grid grid-cols-2 gap-10 mb-24 mr-10">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-16 sm:mb-24">
                     {lunettes.map((lunette) => (
                         <CardLunette lunette={lunette} />
                     ))}
                 </div>
             }
-            <a class="btn bg-blanc text-grisA hover:bg-vert hover:text-blanc" href="/gallerie">Voir plus</a>
+            
         </div>
     </div>
 </Layout>

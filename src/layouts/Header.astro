@@ -27,12 +27,23 @@ if (user) {
 ---
 
 <header
-  class="flex navbar bg-blanc shadow-sm text-grisA fixed top-0 left-1/2 -translate-x-1/2 w-9/10 rounded-sm z-10 mt-5 h-"
+  class="flex navbar bg-blanc shadow-sm text-grisA fixed top-0 left-1/2 -translate-x-1/2 w-full sm:w-11/12 lg:w-9/10 rounded-none sm:rounded-sm z-10 mt-0 sm:mt-5 px-4 sm:px-0"
 >
   <div class="navbar-start">
+    <div class="dropdown lg:hidden">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+      </div>
+      <ul tabindex="0" class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-3 w-52 p-2 shadow">
+        <li><a href="/configurateur" class="hover:text-vert hover:underline transition-all">Configurateur</a></li>
+        <li><a class="hover:text-vert hover:underline transition-all">Chatbot</a></li>
+      </ul>
+    </div>
     <a href="/">
       <Logo
-        class="size-16 stroke-black stroke-2 hover:stroke-vert transition-all"
+        class="size-12 sm:size-14 lg:size-16 stroke-black stroke-2 hover:stroke-vert transition-all"
       />
     </a>
   </div>

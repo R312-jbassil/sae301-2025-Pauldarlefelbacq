@@ -20,12 +20,12 @@ if (!user) {
 const lunettes = await lunettesParUser(user.id);
 ---
 <Layout>
-    <div class=" mt-34">
-        <h2 class="text-grisA mb-4">Vos lunettes sauvegardées</h2>
+    <div class="mt-20 sm:mt-24 lg:mt-34 px-4 sm:px-6 lg:px-10">
+        <h2 class="text-grisA mb-4 sm:mb-6 text-center text-xl sm:text-2xl">Vos lunettes sauvegardées</h2>
             {lunettes.length === 0 ?
-                <h2>Aucune lunettes disponibles</h2>
+                <h2 class="text-center text-base sm:text-lg">Aucune lunettes disponibles</h2>
                 :
-                <div class="grid grid-cols-3 gap-10 mb-24 mx-10 place-content-between justify-center ">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-16 sm:mb-24 place-items-stretch">
                     {lunettes.map((lunette) => (
                         <CardLunette lunette={lunette} />
                     ))}

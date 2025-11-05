@@ -28,14 +28,26 @@ const {
   data-stroke-color={strokeColor}
   data-verres-color={verresColor}
 >
+  <defs>
+    <pattern id="texture-bois" patternUnits="objectBoundingBox" width="1" height="1">
+      <image href="/src/assets/textures/bois.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+    </pattern>
+    <pattern id="texture-carbone" patternUnits="objectBoundingBox" width="1" height="1">
+      <image href="/src/assets/textures/carbone.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+    </pattern>
+    <pattern id="texture-or" patternUnits="objectBoundingBox" width="1" height="1">
+      <image href="/src/assets/textures/or.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+    </pattern>
+  </defs>
+
   <style>
     .customizable-glasses .branche {
-      fill: var(--branche-color, #ffffff);
+      fill: var(--branche-fill, var(--branche-color, #ffffff));
       stroke: var(--stroke-color, #1D1D1B);
       transition: fill 0.3s ease;
     }
     .customizable-glasses .monture {
-      fill: var(--monture-color, #ffffff);
+      fill: var(--monture-fill, var(--monture-color, #ffffff));
       stroke: var(--stroke-color, #1D1D1B);
       transition: fill 0.3s ease;
     }
@@ -46,7 +58,6 @@ const {
     }
   </style>
   
-  <!-- Verres (derrière la monture) -->
   <ellipse class="verres" cx="150" cy="210" rx="90" ry="100"/>
   <ellipse class="verres" cx="530" cy="240" rx="100" ry="110"/>
   

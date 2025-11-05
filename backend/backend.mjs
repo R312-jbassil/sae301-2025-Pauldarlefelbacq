@@ -1,5 +1,6 @@
 import Pocketbase from 'pocketbase';
-const pb = new Pocketbase('https://tavu.pauldarlef.fr:443');
+// const pb = new Pocketbase('https://tavu.pauldarlef.fr:443');
+const pb = new Pocketbase('http://localhost:8090');
 // let path;
 // if(typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
 //     path = 'http://localhost:8090/'
