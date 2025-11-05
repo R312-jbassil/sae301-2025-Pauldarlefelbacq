@@ -1,6 +1,7 @@
 ---
 import Logo from "../assets/Logo_Tavu.svg";
 import pb from '../../backend/backend.mjs';
+import { getTotal, getPanier } from "../../backend/backend.mjs";
 
 const authCookie = Astro.cookies.get('pb_auth');
 let user = null;
@@ -9,6 +10,18 @@ if (authCookie) {
     pb.authStore.loadFromCookie(authCookie.value);
     if (pb.authStore.isValid) {
         user = pb.authStore.model;
+    }
+}
+
+let panier = null;
+let total = null;
+
+if (user) {
+    try {
+        panier = await getPanier(user.id);
+        total = await getTotal(user.id);
+    } catch (error) {
+        console.error("Error fetching panier/total:", error);
     }
 }
 ---
@@ -51,7 +64,11 @@ if (authCookie) {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             ></path>
           </svg>
-          <span class="badge badge-sm indicator-item">8</span>
+          {total === null ? (
+              <span class="badge badge-sm indicator-item">0</span>
+            ) : (
+            <span class="badge badge-sm indicator-item">{total.total}</span>
+            )}
         </div>
       </div>
       <div
@@ -59,8 +76,18 @@ if (authCookie) {
         class="card card-compact dropdown-content bg-blanc z-1 mt-6 w-52 shadow"
       >
         <div class="card-body">
-          <span class="text-lg">8 Objets</span>
-          <span class="">Total: <b>$999</b></span>
+          {total === null || panier === null ? (
+            <>
+              <span class="text-lg">0 Objets</span>
+              <span class="">Total: <b>0€</b></span>
+            </>
+          ) : (
+            <>
+              <span class="text-lg">{total.total} Objets</span>
+              <span class="">Total: <b>{panier.total}€</b></span>
+            </>
+          )}
+          
           <div class="card-actions">
             <button class="btn btn-grisA btn-block hover:bg-blanc hover:text-grisA">Voir le panier</button>
           </div>
@@ -95,7 +122,7 @@ if (authCookie) {
         class="menu menu-sm dropdown-content bg-blanc rounded-box z-1 mt-6 w-52 p-2 shadow"
       >
         <li>
-          <a class="justify-between hover:text-vert hover:underline hover:font-bold"> {user.name} </a>
+          <a href="/profil" class="justify-between hover:text-vert hover:underline hover:font-bold"> {user.name} </a>
         </li>
         <li>
           <form method="POST" action="/apis/logout">

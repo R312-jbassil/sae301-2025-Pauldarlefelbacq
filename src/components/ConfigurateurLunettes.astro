@@ -8,9 +8,10 @@ const materialsBranches = await pb.collection('Mat_branches').getFullList();
 
 interface Props {
   lunetteId?: string;
+  user: any;
 }
 
-const { lunetteId } = Astro.props;
+const { lunetteId, user } = Astro.props;
 
 let existingGlasses = null;
 if (lunetteId) {
@@ -34,6 +35,19 @@ const lensTypes = [
   { value: 'anti-reflet', label: 'Anti-reflet' },
   { value: 'photochromique', label: 'Photochromiques' }
 ];
+
+// Mapping des couleurs pour chaque type de verres
+const lensColors: Record<string, string> = {
+  'claire': 'transparent',
+  'solaire': '#2C2C2C',
+  'lumiere-bleue': '#E6F3FF',
+  'progressif': '#F0F0F0',
+  'anti-reflet': '#FFFACD',
+  'photochromique': '#D8BFD8'
+};
+
+// Déterminer la couleur des verres
+const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres] || 'transparent') : 'transparent';
 ---
 
 <div class="glasses-configurator min-h-screen bg-[#F5F5F5] flex flex-col">
@@ -266,6 +280,7 @@ const lensTypes = [
           montureColor={existingGlasses?.monture || '#C0C0C0'}
           brancheColor={existingGlasses?.branches || '#C0C0C0'}
           strokeColor="#1D1D1B"
+          verresColor={verresColor}
           className="glasses-svg w-full h-auto"
         />
       </div>
@@ -357,7 +372,7 @@ const lensTypes = [
   }
 </style>
 
-<script define:vars={{ lunetteId }}>
+<script define:vars={{ lunetteId, user }}>
   let currentStep = 0;
   const stepNames = ['branches', 'monture', 'verres', 'largeur'];
   const progressPercentages = [25, 50, 75, 100];
@@ -459,6 +474,16 @@ const lensTypes = [
   const lensTypeBtns = document.querySelectorAll('.lens-type-btn');
   const verresTypeInput = document.getElementById('verres-type');
 
+  // Mapping des couleurs pour chaque type de verres
+  const lensColors = {
+    'claire': 'transparent',
+    'solaire': '#2C2C2C',
+    'lumiere-bleue': '#E6F3FF',
+    'progressif': '#F0F0F0',
+    'anti-reflet': '#FFFACD',
+    'photochromique': '#D8BFD8'
+  };
+
   lensTypeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const lensType = btn.dataset.lensType;
@@ -468,6 +493,10 @@ const lensTypes = [
       btn.classList.add('active');
       
       verresTypeInput.value = lensType;
+      
+      // Mettre à jour la couleur des verres dans le SVG
+      const verresColor = lensColors[lensType] || 'transparent';
+      glassesSvg.style.setProperty('--verres-color', verresColor);
     });
   });
 
@@ -491,6 +520,12 @@ const lensTypes = [
   const initialBranchesColor = branchesColorInput.value;
   glassesSvg.style.setProperty('--monture-color', initialMontureColor);
   glassesSvg.style.setProperty('--branche-color', initialBranchesColor);
+  
+  // Initialiser la couleur des verres
+  const initialLensType = verresTypeInput.value;
+  const initialVerresColor = lensColors[initialLensType] || 'transparent';
+  glassesSvg.style.setProperty('--verres-color', initialVerresColor);
+  
   updateCodeSVG();
 
   colorSwatches.forEach(swatch => {
@@ -503,7 +538,6 @@ const lensTypes = [
     }
   });
 
-  const initialLensType = verresTypeInput.value;
   lensTypeBtns.forEach(btn => {
     if (btn.dataset.lensType === initialLensType) {
       btn.classList.add('active');
@@ -517,8 +551,8 @@ const lensTypes = [
     e.preventDefault();
     const formData = new FormData(form);
     
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!user.id) {
+    // user is already available from define:vars
+    if (!user || !user.id) {
       status.textContent = 'Vous devez être connecté pour créer des lunettes';
       status.className = 'mt-4 text-center text-error';
       return;

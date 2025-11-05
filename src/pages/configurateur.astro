@@ -18,7 +18,7 @@ const lunetteId = Astro.url.searchParams.get('id') || undefined;
             <h1 class="text-4xl font-bold text-center mb-8 text-grisA mt-24">
                 {lunetteId ? 'Modifier mes lunettes' : 'Créer mes lunettes'}
             </h1>
-            <ConfigurateurLunettes lunetteId={lunetteId} />
+            <ConfigurateurLunettes lunetteId={lunetteId} user={user} />
         </div>
     </main>
 </Layout>

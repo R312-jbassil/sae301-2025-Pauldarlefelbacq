@@ -9,9 +9,7 @@ const { lunette } = Astro.props;
 ---
 
 {lunette ? (
-    <div class="flex flex-wrap p-1 w-2/10 *my-1 h-auto text-grisA bg-blanc drop-shadow-sm drop-shadow-gris ">
         <CardLunetteModif glasses={lunette} />
-    </div>
 ) : (
     <p>Aucune lunette à afficher</p>
 )}
