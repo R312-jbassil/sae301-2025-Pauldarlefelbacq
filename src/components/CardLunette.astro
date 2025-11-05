@@ -1,20 +1,17 @@
 ---
-import Lunette from "../assets/lunettes.svg";
-import pb from '../../backend/backend.mjs';
-const authCookie = Astro.cookies.get('pb_auth');
-let user = null;
+import CardLunetteModif from "../components/CardLunetteModif.astro";
 
-if (authCookie) {
-    pb.authStore.loadFromCookie(authCookie.value);
-    if (pb.authStore.isValid) {
-        user = pb.authStore.model;
-    }
-};
+interface Props {
+    lunette?: any;
+}
+
+const { lunette } = Astro.props;
 ---
 
-<div class="p-1 w-2/10 h-auto text-grisA bg-blanc drop-shadow-sm drop-shadow-gris ">
-    <h2>Titre</h2>
-    <Lunette class="w-full h-auto my-5" />
-    <p>Priw</p>
-    <p class="italic">Date un peu</p>
-</div>
+{lunette ? (
+    <div class="flex flex-wrap p-1 w-2/10 *my-1 h-auto text-grisA bg-blanc drop-shadow-sm drop-shadow-gris ">
+        <CardLunetteModif glasses={lunette} />
+    </div>
+) : (
+    <p>Aucune lunette à afficher</p>
+)}

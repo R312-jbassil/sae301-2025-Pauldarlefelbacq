@@ -10,7 +10,7 @@ export const POST = async ({ request, cookies, locals }: APIContext) => {
         const data = await request.json();
         
         const newGlasses = await pb.collection("Lunette").create({
-            nom: data.nom,
+            Nom: data.Nom,
             prix: data.prix,
             code_SVG: data.code_SVG,
             verres: data.verres,

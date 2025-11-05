@@ -1,5 +1,5 @@
 ---
-import CustomizableGlasses from './CustomizableGlasses.astro';
+import CustomisationLunettes from './CustomisationLunettes.astro';
 
 interface Props {
   glasses: any;
@@ -7,10 +7,14 @@ interface Props {
 
 const { glasses } = Astro.props;
 
+if (!glasses) {
+  throw new Error('CardLunetteModif: glasses prop is required');
+}
+
 let montureColor = '#ffffff';
 let branchesColor = '#ffffff';
 
-if (glasses.code_SVG) {
+if (glasses?.code_SVG) {
   const parts = glasses.code_SVG.split(',');
   parts.forEach((part: string) => {
     if (part.startsWith('monture:')) {
@@ -21,24 +25,23 @@ if (glasses.code_SVG) {
   });
 }
 
-if (glasses.monture) montureColor = glasses.monture;
-if (glasses.branches) branchesColor = glasses.branches;
+if (glasses?.monture) montureColor = glasses.monture;
+if (glasses?.branches) branchesColor = glasses.branches;
 ---
 
-<div class="glasses-card bg-blanc border-2 border-gris rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-  <!-- Name and Price Header -->
-  {glasses.nom && (
-    <h3 class="text-lg font-bold text-grisA mb-2">{glasses.nom}</h3>
+<div class="glasses-card bg-blanc p-2  shadow-md hover:shadow-lg transition-shadow">
+  {glasses.Nom && (
+    <h3 class="text-lg font-bold text-grisA mb-2">{glasses.Nom}</h3>
   )}
   {glasses.prix && (
-    <p class="text-xl font-bold text-vert mb-4">{glasses.prix}€</p>
+    <p class="text-xl font-bold text-vert">{glasses.prix}€</p>
   )}
   
-  <div class="preview mb-4">
-    <CustomizableGlasses 
+  <div class="preview">
+    <CustomisationLunettes 
       montureColor={montureColor}
       brancheColor={branchesColor}
-      className="w-full"
+      className="w-full h-auto my-10"
     />
   </div>
   
@@ -86,7 +89,7 @@ if (glasses.branches) branchesColor = glasses.branches;
 
   <div class="actions mt-4 flex gap-2">
     <a 
-      href={`/creer-lunettes?id=${glasses.id}`}
+      href={`/configurateur?id=${glasses.id}`}
       class="btn btn-sm bg-vert text-blanc hover:bg-grisA flex-1 rounded-xs"
     >
       Modifier

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CardLunette from '../components/CardLunette.astro';
+import { lunettesParUser } from "../../backend/backend.mjs";
 
 import pb from '../../backend/backend.mjs';
 const authCookie = Astro.cookies.get('pb_auth');
@@ -13,33 +14,45 @@ if (authCookie) {
     }
 };
 if (!user) {
-    Astro.redirect('/login');
+    return Astro.redirect('/login');
 }
+
+const lunettes = (await lunettesParUser(user.id)).slice(0,2);
 ---
 <Layout title=`Profil de ${user.name}`>
-    <div>
+    <div class=" mt-34">
         <div class="flex place-items-center">
             {user.avatar 
-        ?
-        <img src={user.avatar} alt=""> 
-
-        : 
-        <div tabindex="0"  class="btn bg-grisA btn-circle avatar">
-            <div class="w-10 rounded-full">
-                <span>{user.name.substring(0,1)}</span>
+                ?
+                <img src={user.avatar} alt=""> 
+                
+                : 
+                <div tabindex="0"  class="btn bg-grisA btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <span>{user.name.substring(0,1)}</span>
+                    </div>
+                </div>
+            }
+            <div class="text-grisA">
+                <h2>{user.name}</h2>
+                <p>{user.email}</p>
             </div>
         </div>
-        }
-        <div class="text-grisA">
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
-        </div>
-      </div>
-      <h2 class="text-grisA">Commandes récentes</h2>
-      <CardLunette />
+        <h2 class="text-grisA">Commandes récentes</h2>
+        <CardLunette />
     </div>
     <div class="divider divider-horizontal divider-start">Start</div>
+    <>
     <div>
         <h2 class="text-grisA">Vos lunettes sauvegardées</h2>
+        {lunettes.length === 0 ?
+            <h2>Aucune lunettes disponibles</h2>
+            :
+            <div class="flex flex-wrap gap-4 mb-24">
+                {lunettes.map((lunette) => (
+                    <CardLunette lunette={lunette} />
+                ))}
+            </div>
+        }
     </div>
 </Layout>

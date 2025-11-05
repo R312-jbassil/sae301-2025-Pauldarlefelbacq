@@ -42,7 +42,7 @@ export const PUT = async ({ params, request, locals }: APIContext) => {
         const data = await request.json();
         
         const updatedGlasses = await pb.collection("Lunette").update(params.id!, {
-            nom: data.nom,
+            Nom: data.Nom,
             prix: data.prix,
             code_SVG: data.code_SVG,
             verres: data.verres,

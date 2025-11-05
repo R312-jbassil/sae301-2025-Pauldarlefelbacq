@@ -1,5 +1,5 @@
 ---
-import CustomizableGlasses from '../components/CustomizableGlasses.astro';
+import CustomisationLunettes from '../components/CustomisationLunettes.astro';
 import pb from '../../backend/backend.mjs';
 
 // Get all materials for dropdowns
@@ -42,13 +42,12 @@ const lensTypes = [
     <div class="bg-blanc border-r border-gris p-6 lg:p-8 flex flex-col">
       <form id="glasses-form" class="flex-1 flex flex-col">
         
-        <!-- Name and Price Inputs (always visible) -->
         <div class="mb-6 space-y-3">
           <input 
             type="text" 
-            id="nom-lunettes" 
-            name="nom"
-            value={existingGlasses?.nom || ''}
+            id="Nom-lunettes" 
+            name="Nom"
+            value={existingGlasses?.Nom || ''}
             class="input input-bordered w-full bg-blanc border-gris text-grisA"
             placeholder="Nom de vos lunettes"
             required
@@ -221,7 +220,7 @@ const lensTypes = [
                 min="14" 
                 max="24" 
                 value={existingGlasses?.largeur_pont || '18'}
-                class="range range-sm"
+                class="range range-neutral range-xs"
                 step="1"
               />
               <div class="flex justify-between text-xs text-gris px-2 mt-2">
@@ -263,7 +262,7 @@ const lensTypes = [
 
     <div class="bg-blanc p-6 lg:p-12 flex flex-col items-center justify-center relative">
       <div id="glasses-preview" class="w-full max-w-2xl mb-8">
-        <CustomizableGlasses 
+        <CustomisationLunettes 
           montureColor={existingGlasses?.monture || '#C0C0C0'}
           brancheColor={existingGlasses?.branches || '#C0C0C0'}
           strokeColor="#1D1D1B"
@@ -526,7 +525,7 @@ const lensTypes = [
     }
 
     const data = {
-      nom: formData.get('nom'),
+      Nom: formData.get('Nom'),
       prix: parseFloat(formData.get('prix')),
       code_SVG: formData.get('code_SVG'),
       verres: formData.get('verres'),
@@ -575,12 +574,6 @@ const lensTypes = [
       status.textContent = 'Erreur de connexion';
       status.className = 'mt-4 text-center text-error';
     }
-  });
-
-  const savePreviewBtn = document.getElementById('save-preview');
-  savePreviewBtn?.addEventListener('click', () => {
-    // TODO: Implement save preview functionality
-    alert('Aperçu sauvegardé !');
   });
 
   updateProgress();
