@@ -1,9 +1,9 @@
 import Pocketbase from 'pocketbase';
-const pb = new Pocketbase('http://127.0.0.1:8089');
+// const pb = new Pocketbase('http://127.0.0.1:8089');
 if(import.meta.env.MODE === 'development')
     path = 'http://localhost:8090/'
 else path = 'https://tavu.pauldarlef.fr:443'
-
+const pb = new Pocketbase(path);
 export default pb;
 
 export async function listeLunettes() {
