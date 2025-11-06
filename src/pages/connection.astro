@@ -139,7 +139,7 @@ import Header from "../layouts/Header.astro";
             const authData = await pb.collection("users").authWithOAuth2({
                 provider: 'google',
                 urlCallback: (url) => {
-                    window.location.href = url;
+                    window.open(url, '_blank', 'width=600,height=700');
                 }
             });
             
