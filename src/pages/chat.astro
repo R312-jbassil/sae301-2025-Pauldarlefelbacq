@@ -71,6 +71,13 @@ import Layout from '../layouts/Layout.astro';
 			body: JSON.stringify({ prompt }),
 		});
 		const data = await res.json();
+		
+		console.log('[Client] Response:', data);
+		
+		if (data.error) {
+			throw new Error(data.error);
+		}
+		
 		return data.svg;
 	}
 
@@ -103,7 +110,7 @@ import Layout from '../layouts/Layout.astro';
 			}
 		} catch (error) {
 			console.error('Error:', error);
-			svgContainer.innerHTML = '<p class="text-error">Erreur lors de la génération</p>';
+			svgContainer.innerHTML = `<p class="text-error">Erreur: ${error.message}</p>`;
 		} finally {
 			generateButton.disabled = false;
 			loading.classList.add('hidden');
