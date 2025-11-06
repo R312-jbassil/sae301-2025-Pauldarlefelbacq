@@ -72,7 +72,6 @@ export const DELETE = async ({ params, locals }: APIContext) => {
     }
 
     try {
-        // Verify ownership first
         const existingGlasses = await pb.collection("Lunette").getOne(params.id!);
         if (existingGlasses.id_user !== locals.user.id) {
             return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });

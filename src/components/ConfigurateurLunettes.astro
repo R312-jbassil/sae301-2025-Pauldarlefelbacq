@@ -2,7 +2,6 @@
 import CustomisationLunettes from '../components/CustomisationLunettes.astro';
 import pb from '../../backend/backend.mjs';
 
-// Get all materials for dropdowns
 const materialsMonture = await pb.collection('Mat_monture').getFullList();
 const materialsBranches = await pb.collection('Mat_branches').getFullList();
 
@@ -20,13 +19,11 @@ if (lunetteId) {
   });
 }
 
-// Predefined color swatches
 const colorSwatches = [
   '#C0C0C0', '#A9A9A9', '#808080',
   '#696969', '#404040', '#000000'
 ];
 
-// Predefined lens types with prices
 const lensTypes = [
   { value: 'claire', label: 'Verres clairs', price: 0, popular: true, tooltip: 'Usage quotidien' },
   { value: 'solaire', label: 'Lunettes de soleil', price: 30, popular: true, tooltip: 'Protection UV maximale' },
@@ -36,7 +33,6 @@ const lensTypes = [
   { value: 'photochromique', label: 'Photochromiques', price: 60, popular: false, tooltip: 'S\'adapte à la lumière' }
 ];
 
-// Material prices mapping (you can adjust these)
 const materialPrices: Record<string, number> = {
   'bois': 10,
   'acier': 20,
@@ -44,7 +40,6 @@ const materialPrices: Record<string, number> = {
   'or': 150,
 };
 
-// Mapping des couleurs pour chaque type de verres
 const lensColors: Record<string, string> = {
   'claire': 'transparent',
   'solaire': '#2C2C2C',
@@ -54,7 +49,6 @@ const lensColors: Record<string, string> = {
   'photochromique': '#D8BFD8'
 };
 
-// Déterminer la couleur des verres
 const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres] || 'transparent') : 'transparent';
 ---
 
@@ -115,6 +109,16 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
                 />
               ))}
             </div>
+
+            <div class="mb-4">
+              <label for="branches-custom-color" class="text-xs text-gris mb-2 block">Couleur personnalisée</label>
+              <input 
+                type="color" 
+                id="branches-custom-color" 
+                class="w-full h-10 rounded border border-gris cursor-pointer"
+                data-target="branches"
+              />
+            </div>
             
             <select 
               id="branches-material" 
@@ -168,6 +172,16 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
                   data-target="monture"
                 />
               ))}
+            </div>
+
+            <div class="mb-4">
+              <label for="monture-custom-color" class="text-xs text-gris mb-2 block">Couleur personnalisée</label>
+              <input 
+                type="color" 
+                id="monture-custom-color" 
+                class="w-full h-10 rounded border border-gris cursor-pointer"
+                data-target="monture"
+              />
             </div>
             
             <select 
@@ -325,6 +339,18 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
         />
       </div>
 
+      <button 
+        type="button"
+        id="reset-button"
+        class="btn btn-sm btn-outline border-gris text-gris hover:bg-gris hover:text-blanc mb-4"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+        Réinitialiser
+      </button>
+      </div>
+
       <div class="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 flex items-center gap-2">
         <div id="progress-circle" class="radial-progress text-grisA" style="--value:25; --size:2.5rem; --thickness: 3px;" role="progressbar">
           <span class="text-xs font-bold" id="progress-text">25%</span>
@@ -413,7 +439,6 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     background-color: #1D1D1B;
   }
 
-  /* Nudge: Animation du prix */
   @keyframes priceUpdate {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); color: #4A7C59; }
@@ -523,10 +548,73 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     });
   });
 
+  const branchesCustomColor = document.getElementById('branches-custom-color');
+  const montureCustomColor = document.getElementById('monture-custom-color');
+
+  if (branchesCustomColor) {
+    branchesCustomColor.addEventListener('input', (e) => {
+      const color = e.target.value;
+      branchesColorInput.value = color;
+      glassesSvg.style.setProperty('--branche-color', color);
+      
+      document.querySelectorAll('.color-swatch[data-target="branches"]').forEach(s => s.classList.remove('active'));
+      
+      updateCodeSVG();
+    });
+  }
+
+  if (montureCustomColor) {
+    montureCustomColor.addEventListener('input', (e) => {
+      const color = e.target.value;
+      montureColorInput.value = color;
+      glassesSvg.style.setProperty('--monture-color', color);
+      
+      document.querySelectorAll('.color-swatch[data-target="monture"]').forEach(s => s.classList.remove('active'));
+      
+      updateCodeSVG();
+    });
+  }
+
+  const resetButton = document.getElementById('reset-button');
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      const defaultColor = '#C0C0C0';
+      
+      branchesColorInput.value = defaultColor;
+      montureColorInput.value = defaultColor;
+      glassesSvg.style.setProperty('--branche-color', defaultColor);
+      glassesSvg.style.setProperty('--monture-color', defaultColor);
+      
+      if (branchesCustomColor) branchesCustomColor.value = defaultColor;
+      if (montureCustomColor) montureCustomColor.value = defaultColor;
+      
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      
+      const branchesMat = document.getElementById('branches-material');
+      const montureMat = document.getElementById('monture-material');
+      
+      if (branchesMat) {
+        branchesMat.value = '';
+        glassesSvg.style.setProperty('--branche-fill', '');
+      }
+      
+      if (montureMat) {
+        montureMat.value = '';
+        glassesSvg.style.setProperty('--monture-fill', '');
+      }
+      
+      if (prixInput) {
+        prixInput.value = '80';
+        updatePriceDisplays();
+      }
+      
+      updateCodeSVG();
+    });
+  }
+
   const lensTypeBtns = document.querySelectorAll('.lens-type-btn');
   const verresTypeInput = document.getElementById('verres-type');
 
-  // Mapping des couleurs pour chaque type de verres
   const lensColors = {
     'claire': 'transparent',
     'solaire': '#2C2C2C',
@@ -546,11 +634,6 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       
       verresTypeInput.value = lensType;
       
-      // Mettre à jour la couleur des verres dans le SVG
-      const verresColor = lensColors[lensType] || 'transparent';
-      glassesSvg.style.setProperty('--verres-color', verresColor);
-      
-      // Recalculer le prix total
       calculateTotalPrice();
     });
   });
@@ -564,16 +647,13 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     });
   }
 
-  // Prix de base
   const BASE_PRICE = 50;
   const prixInput = document.getElementById('prix-lunettes');
   const priceDisplays = ['price-branches', 'price-monture', 'price-verres', 'price-largeur'];
 
-  // Fonction pour calculer le prix total automatiquement
   function calculateTotalPrice() {
     let total = BASE_PRICE;
     
-    // Prix du matériau des branches
     const branchesMaterial = document.getElementById('branches-material');
     if (branchesMaterial && branchesMaterial.selectedIndex > 0) {
       const selectedOption = branchesMaterial.options[branchesMaterial.selectedIndex];
@@ -581,7 +661,6 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       total += branchesPrice;
     }
     
-    // Prix du matériau de la monture
     const montureMaterial = document.getElementById('monture-material');
     if (montureMaterial && montureMaterial.selectedIndex > 0) {
       const selectedOption = montureMaterial.options[montureMaterial.selectedIndex];
@@ -589,14 +668,12 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       total += monturePrice;
     }
     
-    // Prix des verres
     const activeLensBtn = document.querySelector('.lens-type-btn.active');
     if (activeLensBtn) {
       const lensPrice = parseFloat(activeLensBtn.dataset.lensPrice) || 0;
       total += lensPrice;
     }
     
-    // Mettre à jour l'input prix et tous les affichages
     if (prixInput) {
       prixInput.value = total.toFixed(2);
     }
@@ -605,25 +682,21 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     return total;
   }
 
-  // Mettre à jour les affichages de prix
   function updatePriceDisplays() {
     const prix = prixInput ? prixInput.value : '50';
     priceDisplays.forEach(id => {
       const element = document.getElementById(id);
       if (element) {
         element.textContent = prix;
-        // Nudge: Animation du prix
         element.classList.add('price-animate');
         setTimeout(() => element.classList.remove('price-animate'), 400);
       }
     });
   }
 
-  // Écouter les changements de matériaux
   const branchesMaterialSelect = document.getElementById('branches-material');
   const montureMaterialSelect = document.getElementById('monture-material');
   
-  // Fonction simple pour appliquer les textures
   function applyTexture(materialName, target) {
     const material = materialName?.toLowerCase() || '';
     const textureMap = {
@@ -669,7 +742,6 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
   glassesSvg.style.setProperty('--monture-color', initialMontureColor);
   glassesSvg.style.setProperty('--branche-color', initialBranchesColor);
   
-  // Initialiser la couleur des verres
   const initialLensType = verresTypeInput.value;
   const initialVerresColor = lensColors[initialLensType] || 'transparent';
   glassesSvg.style.setProperty('--verres-color', initialVerresColor);
@@ -692,10 +764,8 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     }
   });
 
-  // Calculer le prix initial au chargement
   calculateTotalPrice();
   
-  // Initialiser l'affichage des prix
   updateProgress();
   updateSteps();
 
@@ -706,7 +776,6 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
     e.preventDefault();
     const formData = new FormData(form);
     
-    // user is already available from define:vars
     if (!user || !user.id) {
       status.textContent = 'Vous devez être connecté pour créer des lunettes';
       status.className = 'mt-4 text-center text-error';
