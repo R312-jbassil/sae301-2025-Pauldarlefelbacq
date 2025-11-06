@@ -48,7 +48,7 @@ import Header from "../layouts/Header.astro";
                         Ou
                     </div>
 
-                    <button class="flex p-2 bg-blanc text-grisA items-center drop-shadow-xs drop-shadow-gris hover:bg-vert hover:text-blanc hover:dropshadow-none transition-all mx-auto text-sm sm:text-base">
+                    <button id="googlelogin" class="flex p-2 bg-blanc text-grisA items-center drop-shadow-xs drop-shadow-gris hover:bg-vert hover:text-blanc hover:dropshadow-none transition-all mx-auto text-sm sm:text-base">
                         <Google class="size-8 sm:size-10 mr-2 shrink-0" /> Se connecter via Google
                     </button>
                 </form>
@@ -130,6 +130,20 @@ import Header from "../layouts/Header.astro";
 
 <script>
     //@ts-nocheck
+    import PocketBase from 'pocketbase';
+    const pb = new PocketBase('https://tavu.pauldarlef.fr');
+    
+    const googlelogin = document.getElementById("googlelogin");
+    googlelogin.onclick = async () => {
+        try {
+            await pb.collection("users").authWithOAuth2({provider: 'google'});
+            location.href = "/students";
+        } catch (err) {
+            document.getElementById("status").textContent = "Échec de connexion Google";
+            console.error(err);
+        }
+    };
+
     localStorage.removeItem("user");
     const form = document.getElementById("login-form");
     const status = document.getElementById("status");
