@@ -32,6 +32,10 @@ export const POST = async ({ request }) => {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('[SVG Generator] OpenRouter error:', errorText);
+            return new Response(JSON.stringify({ svg: '', error: `OpenRouter error: ${response.status}` }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
         }
 
         const data = await response.json();
