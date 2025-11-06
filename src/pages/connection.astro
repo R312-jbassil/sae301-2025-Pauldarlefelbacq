@@ -139,7 +139,7 @@ import Header from "../layouts/Header.astro";
             const authData = await pb.collection("users").authWithOAuth2({provider: 'google'});
             
             // Envoyer le token au backend pour créer le cookie httpOnly
-            const res = await fetch("../apis/oauth-sync", {
+            const res = await fetch("/apis/oauth-sync", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
