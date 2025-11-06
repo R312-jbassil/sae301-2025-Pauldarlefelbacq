@@ -136,9 +136,13 @@ import Header from "../layouts/Header.astro";
     const googlelogin = document.getElementById("googlelogin");
     googlelogin.onclick = async () => {
         try {
-            const authData = await pb.collection("users").authWithOAuth2({provider: 'google'});
+            const authData = await pb.collection("users").authWithOAuth2({
+                provider: 'google',
+                urlCallback: (url) => {
+                    window.location.href = url;
+                }
+            });
             
-            // Envoyer le token au backend pour créer le cookie httpOnly
             const res = await fetch("/apis/oauth-sync", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -1,13 +1,11 @@
 import pb from "../../../backend/backend.mjs";
 
 export const POST = async ({ request, cookies }) => {
-    const { token } = await request.json();
+    const { token, user } = await request.json();
     
     try {
-        // Importer le token OAuth dans le backend
-        pb.authStore.save(token);
+        pb.authStore.save(token, user);
         
-        // Créer le cookie httpOnly comme pour login normal
         cookies.set("pb_auth", pb.authStore.exportToCookie(), {
             path: "/", 
             httpOnly: true, 
@@ -18,6 +16,6 @@ export const POST = async ({ request, cookies }) => {
         return new Response(JSON.stringify({ success: true }), { status: 200 });
     } catch (err) {
         console.error("Erreur OAuth sync:", err);
-        return new Response(JSON.stringify({ error: "Sync failed" }), { status: 500 });
+        return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
     }
 };
