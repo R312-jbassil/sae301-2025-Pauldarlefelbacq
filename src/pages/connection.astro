@@ -136,8 +136,23 @@ import Header from "../layouts/Header.astro";
     const googlelogin = document.getElementById("googlelogin");
     googlelogin.onclick = async () => {
         try {
-            await pb.collection("users").authWithOAuth2({provider: 'google'});
-            location.href = "/students";
+            const authData = await pb.collection("users").authWithOAuth2({provider: 'google'});
+            
+            // Envoyer le token au backend pour créer le cookie httpOnly
+            const res = await fetch("../apis/oauth-sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    token: pb.authStore.token,
+                    user: authData.record
+                }),
+                credentials: "include",
+            });
+
+            if (res.ok) {
+                localStorage.setItem("user", JSON.stringify(authData.record));
+                window.location.href = "/";
+            }
         } catch (err) {
             document.getElementById("status").textContent = "Échec de connexion Google";
             console.error(err);
