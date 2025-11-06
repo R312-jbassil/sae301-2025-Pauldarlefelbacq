@@ -1,4 +1,8 @@
 ---
+import boisTexture from '../assets/textures/bois.avif';
+import carboneTexture from '../assets/textures/carbone.avif';
+import orTexture from '../assets/textures/or.avif';
+
 interface Props {
   montureColor?: string;
   brancheColor?: string;
@@ -30,13 +34,13 @@ const {
 >
   <defs>
     <pattern id="texture-bois" patternUnits="objectBoundingBox" width="1" height="1">
-      <image href="/src/assets/textures/bois.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+      <image href={boisTexture.src} x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
     </pattern>
     <pattern id="texture-carbone" patternUnits="objectBoundingBox" width="1" height="1">
-      <image href="/src/assets/textures/carbone.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+      <image href={carboneTexture.src} x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
     </pattern>
     <pattern id="texture-or" patternUnits="objectBoundingBox" width="1" height="1">
-      <image href="/src/assets/textures/or.avif" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
+      <image href={orTexture.src} x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"/>
     </pattern>
   </defs>
 
