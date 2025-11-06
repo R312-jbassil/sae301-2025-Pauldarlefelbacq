@@ -48,15 +48,27 @@ const lunettes = (await lunettesParUser(user.id)).slice(0,2);
         
         <div class="flex-1">
             <h2 class="text-grisA mb-3 sm:mb-4 text-lg sm:text-xl">Vos lunettes sauvegardées</h2>
-            {lunettes.length === 0 ?
-                <h2 class="text-base sm:text-lg">Aucune lunettes disponibles</h2>
-                :
+            {lunettes.length === 0 ? (
+                <div class="card bg-blanc border border-gris shadow-sm mb-24">
+                    <div class="card-body text-center py-8 sm:py-12">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gris mb-3 sm:mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <h3 class="text-base sm:text-lg font-semibold text-grisA mb-2">Aucune création pour le moment</h3>
+                        <p class="text-xs sm:text-sm text-gris mb-4 sm:mb-6">Créez vos premières lunettes uniques en quelques clics !</p>
+                        <a href="/configurateur" class="btn bg-vert text-blanc hover:bg-vert/90 border-none btn-sm sm:btn-md">
+                            Commencer à créer
+                        </a>
+                    </div>
+                </div>
+            ) : (
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-16 sm:mb-24">
                     {lunettes.map((lunette) => (
                         <CardLunette lunette={lunette} />
                     ))}
                 </div>
-            }
+            )}
             
         </div>
     </div>

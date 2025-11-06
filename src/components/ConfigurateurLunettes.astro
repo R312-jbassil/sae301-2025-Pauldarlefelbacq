@@ -28,12 +28,12 @@ const colorSwatches = [
 
 // Predefined lens types with prices
 const lensTypes = [
-  { value: 'claire', label: 'Verres clairs', price: 0 },
-  { value: 'solaire', label: 'Lunettes de soleil', price: 30 },
-  { value: 'lumiere-bleue', label: 'Lumière bleue', price: 25 },
-  { value: 'progressif', label: 'Progressifs', price: 80 },
-  { value: 'anti-reflet', label: 'Anti-reflet', price: 15 },
-  { value: 'photochromique', label: 'Photochromiques', price: 60 }
+  { value: 'claire', label: 'Verres clairs', price: 0, popular: true, tooltip: 'Usage quotidien' },
+  { value: 'solaire', label: 'Lunettes de soleil', price: 30, popular: true, tooltip: 'Protection UV maximale' },
+  { value: 'lumiere-bleue', label: 'Lumière bleue', price: 25, popular: false, tooltip: 'Anti-fatigue écrans' },
+  { value: 'progressif', label: 'Progressifs', price: 80, popular: false, tooltip: 'Vision à toutes distances' },
+  { value: 'anti-reflet', label: 'Anti-reflet', price: 15, popular: false, tooltip: 'Élimine les reflets' },
+  { value: 'photochromique', label: 'Photochromiques', price: 60, popular: false, tooltip: 'S\'adapte à la lumière' }
 ];
 
 // Material prices mapping (you can adjust these)
@@ -214,15 +214,25 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
               {lensTypes.map((lens) => (
-                <button 
-                  type="button"
-                  class="lens-type-btn p-3 sm:p-4 rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer"
-                  data-lens-type={lens.value}
-                  data-lens-price={lens.price}
-                >
-                  <div class="text-xs sm:text-sm font-medium text-grisA mb-1">{lens.label}</div>
-                  <div class="text-xs text-vert font-semibold">+{lens.price}€</div>
-                </button>
+                <div class="relative group">
+                  <button 
+                    type="button"
+                    class="lens-type-btn p-3 sm:p-4 rounded border-2 border-gris hover:border-grisA transition-colors cursor-pointer w-full text-left"
+                    data-lens-type={lens.value}
+                    data-lens-price={lens.price}
+                  >
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs sm:text-sm font-medium text-grisA">{lens.label}</span>
+                      {lens.popular && (
+                        <span class="badge badge-sm bg-vert text-blanc border-0">Populaire</span>
+                      )}
+                    </div>
+                    <div class="text-xs text-vert font-semibold">+{lens.price}€</div>
+                  </button>
+                  <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-grisA text-blanc text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                    {lens.tooltip}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -280,15 +290,21 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
             <p class="text-xl sm:text-2xl font-bold text-grisA">Prix : <span id="price-largeur">80</span>€</p>
           </div>
 
+          <div class="alert bg-vert/10 border-vert/30 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-vert shrink-0 w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm text-grisA"><strong>Dernière étape !</strong> Vos lunettes uniques sont presque prêtes</span>
+          </div>
+
           <button 
             type="submit" 
             class="btn bg-vert text-blanc hover:bg-vert/90 border-none w-full text-sm sm:text-base"
           >
-            {lunetteId ? 'Mettre à jour' : 'Finaliser'}
+            {lunetteId ? '✓ Mettre à jour' : '✓ Finaliser ma création'}
           </button>
         </div>
 
-        <!-- Hidden Inputs -->
         <input type="hidden" id="branches-color" name="branches" value={existingGlasses?.branches || '#C0C0C0'} />
         <input type="hidden" id="monture-color" name="monture" value={existingGlasses?.monture || '#C0C0C0'} />
         <input type="hidden" id="verres-type" name="verres" value={existingGlasses?.verres || 'claire'} />
@@ -395,6 +411,16 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
 
   .steps .step-neutral::before {
     background-color: #1D1D1B;
+  }
+
+  /* Nudge: Animation du prix */
+  @keyframes priceUpdate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); color: #4A7C59; }
+  }
+
+  .price-animate {
+    animation: priceUpdate 0.4s ease;
   }
 </style>
 
@@ -586,6 +612,9 @@ const verresColor = existingGlasses?.verres ? (lensColors[existingGlasses.verres
       const element = document.getElementById(id);
       if (element) {
         element.textContent = prix;
+        // Nudge: Animation du prix
+        element.classList.add('price-animate');
+        setTimeout(() => element.classList.remove('price-animate'), 400);
       }
     });
   }

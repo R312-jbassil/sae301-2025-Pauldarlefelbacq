@@ -28,7 +28,6 @@ if (glasses?.code_SVG) {
 if (glasses?.monture) montureColor = glasses.monture;
 if (glasses?.branches) branchesColor = glasses.branches;
 
-// Mapping des couleurs pour chaque type de verres
 const lensColors: Record<string, string> = {
   'claire': 'transparent',
   'solaire': '#2C2C2C',
@@ -40,7 +39,6 @@ const lensColors: Record<string, string> = {
 
 const verresColor = glasses?.verres ? (lensColors[glasses.verres] || 'transparent') : 'transparent';
 
-// Récupérer les noms des matériaux
 const montureMaterial = glasses.expand?.id_mat_m?.libelle_mat_m?.toLowerCase() || '';
 const branchesMaterial = glasses.expand?.id_mat_b?.libelle_mat_b?.toLowerCase() || '';
 ---
